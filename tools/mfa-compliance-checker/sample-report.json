@@ -1,0 +1,68 @@
+{
+  "report_title": "MFA Compliance Check",
+  "generated_at": "2026-03-16 15:42:33 UTC",
+  "framework_references": [
+    "ISO 27001 A.8.5",
+    "NIST SP 800-53 IA-2",
+    "SOC 2 CC6.1"
+  ],
+  "summary": {
+    "total_users": 5,
+    "compliant": 0,
+    "non_compliant": 5,
+    "compliance_rate": "0.0%",
+    "overall_status": "FAIL"
+  },
+  "findings": [
+    {
+      "finding_id": "MFA-001",
+      "severity": "HIGH",
+      "user": "admin-no-mfa",
+      "created_date": "2026-03-16",
+      "has_console_access": true,
+      "mfa_enabled": false,
+      "control_reference": "ISO 27001 A.8.5 / NIST IA-2 / SOC 2 CC6.1",
+      "recommendation": "Enable MFA for user admin-no-mfa immediately. Console access without MFA represents a critical authentication control gap."
+    },
+    {
+      "finding_id": "MFA-002",
+      "severity": "HIGH",
+      "user": "analyst-no-mfa",
+      "created_date": "2026-03-16",
+      "has_console_access": true,
+      "mfa_enabled": false,
+      "control_reference": "ISO 27001 A.8.5 / NIST IA-2 / SOC 2 CC6.1",
+      "recommendation": "Enable MFA for user analyst-no-mfa immediately. Console access without MFA represents a critical authentication control gap."
+    },
+    {
+      "finding_id": "MFA-003",
+      "severity": "HIGH",
+      "user": "dev-user-no-mfa",
+      "created_date": "2026-03-16",
+      "has_console_access": true,
+      "mfa_enabled": false,
+      "control_reference": "ISO 27001 A.8.5 / NIST IA-2 / SOC 2 CC6.1",
+      "recommendation": "Enable MFA for user dev-user-no-mfa immediately. Console access without MFA represents a critical authentication control gap."
+    },
+    {
+      "finding_id": "MFA-004",
+      "severity": "MEDIUM",
+      "user": "service-account-api",
+      "created_date": "2026-03-16",
+      "has_console_access": false,
+      "mfa_enabled": false,
+      "control_reference": "ISO 27001 A.8.5 / NIST IA-2 / SOC 2 CC6.1",
+      "recommendation": "Enable MFA for user service-account-api. This service account lacks MFA — if credentials are compromised, API access to AWS resources is unprotected."
+    },
+    {
+      "finding_id": "MFA-005",
+      "severity": "HIGH",
+      "user": "test-user-no-mfa",
+      "created_date": "2026-03-16",
+      "has_console_access": true,
+      "mfa_enabled": false,
+      "control_reference": "ISO 27001 A.8.5 / NIST IA-2 / SOC 2 CC6.1",
+      "recommendation": "Enable MFA for user test-user-no-mfa immediately. Console access without MFA represents a critical authentication control gap."
+    }
+  ]
+}
