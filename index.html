@@ -12,17 +12,30 @@
         .header { text-align: center; margin-bottom: 48px; }
         .header h1 { font-size: 36px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .header p { color: #94a3b8; font-size: 18px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 48px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
         .stat-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; text-align: center; }
         .stat-value { font-size: 32px; font-weight: 700; color: #60a5fa; }
+        .stat-value-green { color: #34d399; }
         .stat-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+        .tabs { display: flex; gap: 4px; margin-bottom: 32px; background: rgba(255,255,255,0.03); border-radius: 12px; padding: 6px; }
+        .tab-btn { flex: 1; padding: 14px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 600; transition: all 0.2s; background: transparent; color: #64748b; }
+        .tab-btn.active.tab-labs { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+        .tab-btn.active.tab-toolkit { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .lab-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 32px; }
+        .lab-stat { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.15); border-radius: 10px; padding: 16px; text-align: center; }
+        .lab-stat-value { font-size: 26px; font-weight: 700; color: #60a5fa; }
+        .lab-stat-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
         .project-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 32px; margin-bottom: 24px; }
         .project-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
         .project-title { font-size: 22px; font-weight: 700; color: #f8fafc; }
         .project-subtitle { font-size: 14px; color: #94a3b8; margin-top: 4px; }
-        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; margin-right: 6px; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; margin-right: 6px; margin-bottom: 4px; }
         .badge-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
         .badge-green { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        .badge-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+        .badge-orange { background: rgba(249, 115, 22, 0.2); color: #fb923c; }
         .metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
         .metric { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 16px; text-align: center; }
         .metric-value { font-size: 24px; font-weight: 700; color: #60a5fa; }
@@ -30,65 +43,185 @@
         .bullets { margin-bottom: 24px; }
         .bullets h4 { font-size: 14px; color: #94a3b8; margin-bottom: 12px; }
         .bullet { padding: 12px 16px; background: rgba(255,255,255,0.02); border-left: 3px solid #60a5fa; margin-bottom: 8px; border-radius: 0 8px 8px 0; font-size: 14px; }
+        .bullet-green { border-left-color: #34d399; }
         .rationale { background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1)); border-radius: 12px; padding: 24px; margin-top: 20px; }
         .rationale h4 { font-size: 14px; color: #a78bfa; margin-bottom: 16px; }
         .rationale-item { margin-bottom: 16px; }
         .rationale-label { font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
         .rationale-text { font-size: 14px; color: #e2e8f0; }
+        .toolkit-intro { font-size: 14px; color: #94a3b8; margin-bottom: 28px; line-height: 1.7; }
+        .tool-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+        .tool-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+        .tool-name { font-size: 17px; font-weight: 700; color: #f8fafc; }
+        .tool-description { font-size: 14px; color: #94a3b8; margin-bottom: 14px; }
+        .tool-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+        .tool-metric { background: rgba(255,255,255,0.05); border-radius: 6px; padding: 10px; text-align: center; }
+        .tool-metric-value { font-size: 16px; font-weight: 700; color: #34d399; }
+        .tool-metric-label { font-size: 10px; color: #94a3b8; }
+        .tool-link { display: inline-flex; align-items: center; gap: 6px; color: #34d399; font-size: 13px; text-decoration: none; padding: 6px 14px; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 6px; transition: all 0.2s; }
+        .tool-link:hover { background: rgba(16, 185, 129, 0.1); }
+        .coming-soon { background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+        .coming-soon-title { font-size: 14px; font-weight: 600; color: #64748b; margin-bottom: 6px; }
+        .coming-soon-desc { font-size: 13px; color: #475569; }
         .skills-section { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 32px; margin-top: 48px; }
         .skills-section h3 { font-size: 18px; margin-bottom: 20px; }
         .skills-grid { display: flex; flex-wrap: wrap; gap: 8px; }
         .skill-tag { background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; font-size: 13px; }
+        .skill-tag-green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
         .footer { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); color: #64748b; font-size: 13px; }
     </style>
 </head>
 <body>
     <div class="container">
+
         <div class="header">
             <h1>🛡️ Carlos Molina GRC Professional</h1>
             <p>GRC Professional Portfolio</p>
         </div>
-        
+
         <div class="stats-grid">
-            <div class="stat-card"><div class="stat-value">2</div><div class="stat-label">Projects</div></div>
-            <div class="stat-card"><div class="stat-value">5</div><div class="stat-label">Assets</div></div>
-            <div class="stat-card"><div class="stat-value">9</div><div class="stat-label">Risks</div></div>
-            <div class="stat-card"><div class="stat-value">11</div><div class="stat-label">Controls</div></div>
+            <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Projects</div></div>
+            <div class="stat-card"><div class="stat-value">6</div><div class="stat-label">Frameworks</div></div>
+            <div class="stat-card"><div class="stat-value stat-value-green">1</div><div class="stat-label">Tools Deployed</div></div>
+            <div class="stat-card"><div class="stat-value stat-value-green">2</div><div class="stat-label">Tools in Development</div></div>
         </div>
-        <div class="project-card">
-            <div class="project-header">
-                <div>
-                    <div class="project-title">TechStart Inc</div>
-                    <div class="project-subtitle">ISO 27001 Risk Assessment for Cloud Migration</div>
+
+        <div class="tabs">
+            <button class="tab-btn tab-labs active" onclick="switchTab('labs')">
+                📋 Case Studies
+            </button>
+            <button class="tab-btn tab-toolkit" onclick="switchTab('toolkit')">
+                🔧 GRC Automation Toolkit
+            </button>
+        </div>
+
+        <!-- TAB: CASE STUDIES -->
+        <div id="tab-labs" class="tab-content active">
+
+            <div class="lab-stats">
+                <div class="lab-stat"><div class="lab-stat-value">5</div><div class="lab-stat-label">Assets</div></div>
+                <div class="lab-stat"><div class="lab-stat-value">9</div><div class="lab-stat-label">Risks</div></div>
+                <div class="lab-stat"><div class="lab-stat-value">11</div><div class="lab-stat-label">Controls</div></div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header">
+                    <div>
+                        <div class="project-title">TechStart Inc</div>
+                        <div class="project-subtitle">ISO 27001 Risk Assessment for Cloud Migration</div>
+                    </div>
+                    <div>
+                        <span class="badge badge-blue">ISO 27001</span>
+                        <span class="badge badge-blue">NIST CSF</span>
+                        <span class="badge badge-green">100%</span>
+                    </div>
                 </div>
-                <div>
-                    <span class="badge badge-blue">ISO 27001</span><span class="badge badge-blue">NIST CSF</span>
-                    <span class="badge badge-green">100%</span>
+                <div class="metrics-row">
+                    <div class="metric"><div class="metric-value">4</div><div class="metric-label">Assets</div></div>
+                    <div class="metric"><div class="metric-value">5</div><div class="metric-label">Risks</div></div>
+                    <div class="metric"><div class="metric-value">5</div><div class="metric-label">Controls</div></div>
+                    <div class="metric"><div class="metric-value">4/4</div><div class="metric-label">Tasks</div></div>
+                </div>
+                <div class="bullets"><h4>Key Accomplishments</h4>
+                    <div class="bullet">Conducted comprehensive asset inventory and classification for 4 information assets supporting ISO 27001 ISMS implementation</div>
+                    <div class="bullet">Performed risk assessment identifying 5 risks across cloud migration scope, including 3 critical and 2 high-severity risks requiring immediate attention</div>
+                    <div class="bullet">Implemented 5 security controls aligned with ISO 27001 Annex A requirements and NIST CSF</div>
+                    <div class="bullet">Developed 5 risk treatment plans with documented mitigation strategies, acceptance criteria, and residual risk calculations</div>
+                    <div class="bullet">Completed ISO 27001 risk assessment documentation supporting certification readiness for cloud infrastructure</div>
+                </div>
+                <div class="rationale"><h4><i class="bi bi-lightbulb"></i> Decision Rationale</h4>
+                    <div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">TechStart Inc. completed a cloud migration and required a formal post-migration risk assessment to validate that critical information security controls were properly implemented and operating effectively across key assets, ensuring compliance with ISO 27001 requirements.</div></div>
+                    <div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">Security tools for backup immutability (S3 Object Lock) and access analysis (AWS IAM Access Analyzer) were selected from the cloud provider's native catalog. This decision leveraged seamless platform integration and consolidated support responsibilities under a single vendor, reducing response complexity during critical incidents.</div></div>
+                    <div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">The organization gained a comprehensive map of its current information security posture in the new cloud environment, along with a structured plan to maintain and improve its security controls. This enables informed decision-making and provides an objective, verifiable, and auditable framework for ongoing risk management, significantly improving the maturity level of TechStart Inc.'s information security governance.</div></div>
                 </div>
             </div>
-            <div class="metrics-row">
-                <div class="metric"><div class="metric-value">4</div><div class="metric-label">Assets</div></div>
-                <div class="metric"><div class="metric-value">5</div><div class="metric-label">Risks</div></div>
-                <div class="metric"><div class="metric-value">5</div><div class="metric-label">Controls</div></div>
-                <div class="metric"><div class="metric-value">4/4</div><div class="metric-label">Tasks</div></div>
-            </div><div class="bullets"><h4>Key Accomplishments</h4><div class="bullet">Conducted comprehensive asset inventory and classification for 4 information assets supporting ISO 27001 ISMS implementation</div><div class="bullet">Performed risk assessment identifying 5 risks across cloud migration scope, including 3 critical and 2 high-severity risks requiring immediate attention</div><div class="bullet">Implemented 5 security controls aligned with ISO 27001 Annex A requirements and NIST CSF</div><div class="bullet">Developed 5 risk treatment plans with documented mitigation strategies, acceptance criteria, and residual risk calculations</div><div class="bullet">Completed ISO 27001 risk assessment documentation supporting certification readiness for cloud infrastructure</div></div><div class="rationale"><h4><i class="bi bi-lightbulb"></i> Decision Rationale</h4><div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">TechStart Inc. completed a cloud migration and required a formal post-migration risk assessment to validate that critical information security controls were properly implemented and operating effectively across key assets, ensuring compliance with ISO 27001 requirements.</div></div><div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">Security tools for backup immutability (S3 Object Lock) and access analysis (AWS IAM Access Analyzer) were selected from the cloud provider's native catalog. This decision leveraged seamless platform integration and consolidated support responsibilities under a single vendor, reducing response complexity during critical incidents.</div></div><div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">The organization gained a comprehensive map of its current information security posture in the new cloud environment, along with a structured plan to maintain and improve its security controls. This enables informed decision-making and provides an objective, verifiable, and auditable framework for ongoing risk management, significantly improving the maturity level of TechStart Inc.'s information security governance.</div></div></div></div>
-        <div class="project-card">
-            <div class="project-header">
-                <div>
-                    <div class="project-title">FinSecure Banking</div>
-                    <div class="project-subtitle">Third-Party Risk Management for Payment Processor</div>
+
+            <div class="project-card">
+                <div class="project-header">
+                    <div>
+                        <div class="project-title">FinSecure Banking</div>
+                        <div class="project-subtitle">Third-Party Risk Management for Payment Processor</div>
+                    </div>
+                    <div>
+                        <span class="badge badge-blue">PCI DSS</span>
+                        <span class="badge badge-blue">SOC 2</span>
+                        <span class="badge badge-green">100%</span>
+                    </div>
                 </div>
-                <div>
-                    <span class="badge badge-blue">PCI DSS</span><span class="badge badge-blue">SOC 2</span>
-                    <span class="badge badge-green">100%</span>
+                <div class="metrics-row">
+                    <div class="metric"><div class="metric-value">1</div><div class="metric-label">Assets</div></div>
+                    <div class="metric"><div class="metric-value">4</div><div class="metric-label">Risks</div></div>
+                    <div class="metric"><div class="metric-value">6</div><div class="metric-label">Controls</div></div>
+                    <div class="metric"><div class="metric-value">4/4</div><div class="metric-label">Tasks</div></div>
+                </div>
+                <div class="bullets"><h4>Key Accomplishments</h4>
+                    <div class="bullet">Conducted third-party security assessments for 1 vendor, evaluating security posture against PCI DSS and SOC 2 requirements</div>
+                    <div class="bullet">Identified and documented 4 vendor-related security risks impacting payment card data environment</div>
+                    <div class="bullet">Verified implementation of 6 compensating controls for third-party payment processor integration</div>
+                    <div class="bullet">Documented 3 compliance gaps and coordinated remediation efforts</div>
+                    <div class="bullet">Established ongoing vendor monitoring program with quarterly security assessments and contract compliance reviews</div>
+                </div>
+                <div class="rationale"><h4><i class="bi bi-lightbulb"></i> Decision Rationale</h4>
+                    <div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">FinSecure Banking required integration with PaySecure Solutions, a third-party payment processor with direct access to customer cardholder data. Given the sensitivity of the data involved and OCC regulatory obligations, a formal third-party risk assessment was required to evaluate PaySecure's security posture, verify PCI DSS and SOC 2 compliance, and ensure cardholder data protection prior to contract execution.</div></div>
+                    <div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">PCI DSS and SOC 2 were selected as the primary evaluation frameworks, as they directly govern payment card data security and third-party service provider attestation requirements. While ISO 27001 controls were considered as an alternative framework, PCI DSS requirements were prioritized as they are mandated by the payment card industry regulators and directly applicable to PaySecure's operating environment.</div></div>
+                    <div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">FinSecure established minimum security and compliance requirements for third-party payment processor integration, ensuring cardholder data protection aligned with PCI DSS and OCC regulations. The assessment also prompted an internal review of FinSecure's own compliance controls and contract management practices, resulting in strengthened vendor contract terms including specific regulatory obligations, penalty clauses, and remediation timelines for future third-party engagements.</div></div>
                 </div>
             </div>
-            <div class="metrics-row">
-                <div class="metric"><div class="metric-value">1</div><div class="metric-label">Assets</div></div>
-                <div class="metric"><div class="metric-value">4</div><div class="metric-label">Risks</div></div>
-                <div class="metric"><div class="metric-value">6</div><div class="metric-label">Controls</div></div>
-                <div class="metric"><div class="metric-value">4/4</div><div class="metric-label">Tasks</div></div>
-            </div><div class="bullets"><h4>Key Accomplishments</h4><div class="bullet">Conducted third-party security assessments for 1 vendor(s), evaluating security posture against PCI DSS and SOC 2 requirements</div><div class="bullet">Identified and documented 4 vendor-related security risks impacting payment card data environment</div><div class="bullet">Verified implementation of 6 compensating controls for third-party payment processor integration</div><div class="bullet">Documented 3 compliance gaps and coordinated remediation efforts</div><div class="bullet">Established ongoing vendor monitoring program with quarterly security assessments and contract compliance reviews</div></div><div class="rationale"><h4><i class="bi bi-lightbulb"></i> Decision Rationale</h4><div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">FinSecure Banking required integration with PaySecure Solutions, a third-party payment processor with direct access to customer cardholder data. Given the sensitivity of the data involved and OCC regulatory obligations, a formal third-party risk assessment was required to evaluate PaySecure's security posture, verify PCI DSS and SOC 2 compliance, and ensure cardholder data protection prior to contract execution.</div></div><div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">PCI DSS and SOC 2 were selected as the primary evaluation frameworks, as they directly govern payment card data security and third-party service provider attestation requirements. While ISO 27001 controls were considered as an alternative framework, PCI DSS requirements were prioritized as they are mandated by the payment card industry regulators and directly applicable to PaySecure's operating environment.</div></div><div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">FinSecure established minimum security and compliance requirements for third-party payment processor integration, ensuring cardholder data protection aligned with PCI DSS and OCC regulations. The assessment also prompted an internal review of FinSecure's own compliance controls and contract management practices, resulting in strengthened vendor contract terms including specific regulatory obligations, penalty clauses, and remediation timelines for future third-party engagements.</div></div></div></div>
+        </div>
+
+        <!-- TAB: GRC AUTOMATION TOOLKIT -->
+        <div id="tab-toolkit" class="tab-content">
+
+            <p class="toolkit-intro">
+                A growing collection of AWS Lambda functions that automate the detection and documentation of the most common audit findings across GRC frameworks. Each tool generates structured reports with control references, severity classifications, and remediation recommendations — ready for audit evidence packages. Built and deployed on AWS using Python 3.11.
+            </p>
+
+            <div class="tool-item">
+                <div class="tool-header">
+                    <div>
+                        <div class="tool-name">MFA Compliance Checker</div>
+                        <div class="tool-description">Audits all IAM users for MFA enrollment. Classifies findings by severity based on console access. Maps to ISO 27001 A.8.5, NIST SP 800-53 IA-2, and SOC 2 CC6.1.</div>
+                    </div>
+                    <span class="badge badge-emerald">✓ Deployed</span>
+                </div>
+                <div class="tool-metrics">
+                    <div class="tool-metric"><div class="tool-metric-value">3</div><div class="tool-metric-label">Frameworks</div></div>
+                    <div class="tool-metric"><div class="tool-metric-value">2</div><div class="tool-metric-label">Severity Levels</div></div>
+                    <div class="tool-metric"><div class="tool-metric-value">&lt;3s</div><div class="tool-metric-label">Execution Time</div></div>
+                </div>
+                <div class="bullets" style="margin-bottom: 14px;">
+                    <div class="bullet bullet-green">Detects users with console access and no MFA — classified as HIGH severity</div>
+                    <div class="bullet bullet-green">Detects service accounts without MFA — classified as MEDIUM severity</div>
+                    <div class="bullet bullet-green">Generates structured JSON report with finding IDs, control references, and remediation recommendations</div>
+                </div>
+                <a class="tool-link" href="https://github.com/cjmolinac/GRC-Portfolio/tree/main/tools/mfa-compliance-checker" target="_blank">
+                    <i class="bi bi-github"></i> View on GitHub
+                </a>
+            </div>
+
+            <div class="coming-soon">
+                <div class="coming-soon-title">⏳ CloudTrail Change Auditor — In Development</div>
+                <div class="coming-soon-desc">Detects unauthorized changes to AWS infrastructure outside approved change windows. Generates findings with user, timestamp, and resource affected.</div>
+                <div class="coming-soon-tags" style="margin-top: 10px;">
+                    <span class="badge badge-blue">SOC 2 CC8.1</span>
+                    <span class="badge badge-blue">NIST CM-3</span>
+                    <span class="badge badge-blue">ISO 27001 A.8.32</span>
+                </div>
+            </div>
+
+            <div class="coming-soon">
+                <div class="coming-soon-title">⏳ Backup Verification Monitor — In Development</div>
+                <div class="coming-soon-desc">Verifies that backups of critical AWS resources exist, are recent, and meet size expectations. Generates alerts and audit evidence for availability controls.</div>
+                <div class="coming-soon-tags" style="margin-top: 10px;">
+                    <span class="badge badge-blue">SOC 2 CC9.1</span>
+                    <span class="badge badge-blue">NIST CP-9</span>
+                    <span class="badge badge-blue">ISO 27001 A.8.13</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SKILLS -->
         <div class="skills-section">
             <h3>Skills & Frameworks</h3>
             <div class="skills-grid">
@@ -103,12 +236,25 @@
                 <span class="skill-tag">PCI DSS</span>
                 <span class="skill-tag">HIPAA</span>
                 <span class="skill-tag">GDPR</span>
+                <span class="skill-tag skill-tag-green">AWS Lambda</span>
+                <span class="skill-tag skill-tag-green">Python</span>
+                <span class="skill-tag skill-tag-green">AWS IAM</span>
+                <span class="skill-tag skill-tag-green">GRC Automation</span>
             </div>
         </div>
-        
+
         <div class="footer">
-            Generated with GRC Practice Lab • 25/2/2026
+            Carlos J. Molina — GRC Professional &amp; ISO 27001 Lead Auditor • Updated March 2026
         </div>
     </div>
+
+    <script>
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.querySelector('.tab-' + tab).classList.add('active');
+        }
+    </script>
 </body>
 </html>
