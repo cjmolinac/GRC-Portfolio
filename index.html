@@ -50,6 +50,10 @@
         .rationale-label { font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
         .rationale-text { font-size: 14px; color: #e2e8f0; }
         .toolkit-intro { font-size: 14px; color: #94a3b8; margin-bottom: 28px; line-height: 1.7; }
+        .architecture-note { background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 20px; margin-bottom: 28px; }
+        .architecture-note h4 { font-size: 13px; color: #a5b4fc; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .architecture-note p { font-size: 13px; color: #94a3b8; line-height: 1.6; }
+        .architecture-note code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 4px; font-size: 12px; color: #e2e8f0; }
         .tool-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 12px; padding: 24px; margin-bottom: 16px; }
         .tool-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
         .tool-name { font-size: 17px; font-weight: 700; color: #f8fafc; }
@@ -60,9 +64,6 @@
         .tool-metric-label { font-size: 10px; color: #94a3b8; }
         .tool-link { display: inline-flex; align-items: center; gap: 6px; color: #34d399; font-size: 13px; text-decoration: none; padding: 6px 14px; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 6px; transition: all 0.2s; }
         .tool-link:hover { background: rgba(16, 185, 129, 0.1); }
-        .coming-soon { background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
-        .coming-soon-title { font-size: 14px; font-weight: 600; color: #64748b; margin-bottom: 6px; }
-        .coming-soon-desc { font-size: 13px; color: #475569; }
         .skills-section { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 32px; margin-top: 48px; }
         .skills-section h3 { font-size: 18px; margin-bottom: 20px; }
         .skills-grid { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -82,7 +83,7 @@
         <div class="stats-grid">
             <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Projects</div></div>
             <div class="stat-card"><div class="stat-value">6</div><div class="stat-label">Frameworks</div></div>
-            <div class="stat-card"><div class="stat-value stat-value-green">2</div><div class="stat-label">Tools Deployed</div></div>
+            <div class="stat-card"><div class="stat-value stat-value-green">3</div><div class="stat-label">Tools Deployed</div></div>
             <div class="stat-card"><div class="stat-value stat-value-green">1</div><div class="stat-label">Tools in Development</div></div>
         </div>
 
@@ -176,6 +177,11 @@
                 A growing collection of AWS Lambda functions that automate the detection and documentation of the most common audit findings across GRC frameworks. Each tool generates structured reports with control references, severity classifications, and remediation recommendations — ready for audit evidence packages. Built and deployed on AWS using Python 3.11.
             </p>
 
+            <div class="architecture-note">
+                <h4>🏗️ Shared Audit Evidence Architecture</h4>
+                <p>All tools in this toolkit write their reports to a centralized S3 bucket (<code>grc-audit-reports/</code>), organized by tool name and timestamp. This design decision mirrors how mature GRC programs consolidate audit evidence — a single repository accessible to auditors, with consistent naming conventions and retention policies applied uniformly across all controls.</p>
+            </div>
+
             <div class="tool-item">
                 <div class="tool-header">
                     <div>
@@ -222,13 +228,38 @@
                 </a>
             </div>
 
-            <div class="coming-soon">
-                <div class="coming-soon-title">⏳ CloudTrail Change Auditor — In Development</div>
-                <div class="coming-soon-desc">Detects unauthorized changes to AWS infrastructure outside approved change windows. Generates findings with user, timestamp, and resource affected.</div>
-                <div style="margin-top: 10px;">
-                    <span class="badge badge-blue">SOC 2 CC8.1</span>
-                    <span class="badge badge-blue">NIST CM-3</span>
-                    <span class="badge badge-blue">ISO 27001 A.8.32</span>
+            <div class="tool-item">
+                <div class="tool-header">
+                    <div>
+                        <div class="tool-name">RDS Backup Compliance Checker</div>
+                        <div class="tool-description">Audits all RDS instances for backup configuration compliance. Detects disabled backups, insufficient retention periods, and unencrypted storage. Delivers findings via structured JSON report saved to S3 and optional email summary. Maps to ISO 27001 A.8.13, NIST SP 800-53 CP-9, and SOC 2 CC9.1.</div>
+                    </div>
+                    <span class="badge badge-emerald">✓ Deployed</span>
+                </div>
+                <div class="tool-metrics">
+                    <div class="tool-metric"><div class="tool-metric-value">3</div><div class="tool-metric-label">Frameworks</div></div>
+                    <div class="tool-metric"><div class="tool-metric-value">3</div><div class="tool-metric-label">Finding Types</div></div>
+                    <div class="tool-metric"><div class="tool-metric-value">Email</div><div class="tool-metric-label">Delivery Option</div></div>
+                </div>
+                <div class="bullets" style="margin-bottom: 14px;">
+                    <div class="bullet bullet-green">Detects RDS instances with automated backups fully disabled — classified as CRITICAL</div>
+                    <div class="bullet bullet-green">Detects retention periods below the 7-day policy minimum — classified as HIGH or MEDIUM</div>
+                    <div class="bullet bullet-green">Detects unencrypted instance storage — backup snapshots inherit the same exposure</div>
+                    <div class="bullet bullet-green">Saves timestamped JSON report to centralized S3 audit evidence bucket</div>
+                    <div class="bullet bullet-green">Optional email delivery — pass send_email, sender_email, and email_to in the event payload</div>
+                </div>
+                <a class="tool-link" href="https://github.com/cjmolinac/GRC-Portfolio/tree/main/tools/rds-backup-checker" target="_blank">
+                    <i class="bi bi-github"></i> View on GitHub
+                </a>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+                <div style="font-size: 14px; font-weight: 600; color: #64748b; margin-bottom: 6px;">⏳ Third-Party Security Evaluator — In Development</div>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 10px;">Evaluates the external security posture of a vendor domain using public APIs — no internal access required. Aggregates findings from certificate validation, security headers, DNS configuration, and domain reputation into a single structured report with control references. Designed for GRC analysts conducting vendor assessments without waiting weeks for questionnaire responses.</div>
+                <div>
+                    <span class="badge badge-blue">ISO 27001 A.5.19</span>
+                    <span class="badge badge-blue">NIST SR-6</span>
+                    <span class="badge badge-blue">SOC 2 CC9.2</span>
                 </div>
             </div>
 
@@ -252,6 +283,8 @@
                 <span class="skill-tag skill-tag-green">Python</span>
                 <span class="skill-tag skill-tag-green">AWS IAM</span>
                 <span class="skill-tag skill-tag-green">AWS S3</span>
+                <span class="skill-tag skill-tag-green">AWS RDS</span>
+                <span class="skill-tag skill-tag-green">AWS SES</span>
                 <span class="skill-tag skill-tag-green">GRC Automation</span>
             </div>
         </div>
