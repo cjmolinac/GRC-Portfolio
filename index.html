@@ -82,7 +82,7 @@
 
         <div class="stats-grid">
             <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Projects</div></div>
-            <div class="stat-card"><div class="stat-value">6</div><div class="stat-label">Frameworks</div></div>
+            <div class="stat-card"><div class="stat-value">7</div><div class="stat-label">Frameworks</div></div>
             <div class="stat-card"><div class="stat-value stat-value-green">3</div><div class="stat-label">Tools Deployed</div></div>
             <div class="stat-card"><div class="stat-value stat-value-green">1</div><div class="stat-label">Tools in Development</div></div>
         </div>
@@ -100,9 +100,9 @@
         <div id="tab-labs" class="tab-content active">
 
             <div class="lab-stats">
-                <div class="lab-stat"><div class="lab-stat-value">5</div><div class="lab-stat-label">Assets</div></div>
-                <div class="lab-stat"><div class="lab-stat-value">9</div><div class="lab-stat-label">Risks</div></div>
-                <div class="lab-stat"><div class="lab-stat-value">11</div><div class="lab-stat-label">Controls</div></div>
+                <div class="lab-stat"><div class="lab-stat-value">9</div><div class="lab-stat-label">Assets</div></div>
+                <div class="lab-stat"><div class="lab-stat-value">13</div><div class="lab-stat-label">Risks</div></div>
+                <div class="lab-stat"><div class="lab-stat-value">23</div><div class="lab-stat-label">Controls</div></div>
             </div>
 
             <div class="project-card">
@@ -166,6 +166,38 @@
                     <div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">FinSecure Banking required integration with PaySecure Solutions, a third-party payment processor with direct access to customer cardholder data. Given the sensitivity of the data involved and OCC regulatory obligations, a formal third-party risk assessment was required to evaluate PaySecure's security posture, verify PCI DSS and SOC 2 compliance, and ensure cardholder data protection prior to contract execution.</div></div>
                     <div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">PCI DSS and SOC 2 were selected as the primary evaluation frameworks, as they directly govern payment card data security and third-party service provider attestation requirements. While ISO 27001 controls were considered as an alternative framework, PCI DSS requirements were prioritized as they are mandated by the payment card industry regulators and directly applicable to PaySecure's operating environment.</div></div>
                     <div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">FinSecure established minimum security and compliance requirements for third-party payment processor integration, ensuring cardholder data protection aligned with PCI DSS and OCC regulations. The assessment also prompted an internal review of FinSecure's own compliance controls and contract management practices, resulting in strengthened vendor contract terms including specific regulatory obligations, penalty clauses, and remediation timelines for future third-party engagements.</div></div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-header">
+                    <div>
+                        <div class="project-title">DataFlow Analytics</div>
+                        <div class="project-subtitle">SOC 2 Type II Audit Preparation</div>
+                    </div>
+                    <div>
+                        <span class="badge badge-blue">SOC 2</span>
+                        <span class="badge badge-blue">NIST CSF</span>
+                        <span class="badge badge-green">100%</span>
+                    </div>
+                </div>
+                <div class="metrics-row">
+                    <div class="metric"><div class="metric-value">4</div><div class="metric-label">Assets</div></div>
+                    <div class="metric"><div class="metric-value">12</div><div class="metric-label">Controls</div></div>
+                    <div class="metric"><div class="metric-value">42%</div><div class="metric-label">Effectiveness</div></div>
+                    <div class="metric"><div class="metric-value">4/4</div><div class="metric-label">Tasks</div></div>
+                </div>
+                <div class="bullets"><h4>Key Accomplishments</h4>
+                    <div class="bullet">Documented 12 SOC 2 Trust Services Criteria controls for DataFlow Analytics, a Fortune 500 data analytics provider, identifying 2 ineffective and 5 partially effective controls requiring remediation prior to audit observation period</div>
+                    <div class="bullet">Conducted control gap analysis across 4 in-scope systems revealing critical findings in production access control and antimalware management, with ineffective ratings supported by documented evidence and field-validated rationale</div>
+                    <div class="bullet">Evaluated change management, incident response, and business continuity controls against SOC 2 and NIST CSF requirements, assessing RTO/RPO alignment and regulatory notification obligations</div>
+                    <div class="bullet">Assessed backup compliance, log retention integrity, and user lifecycle management controls across cloud-based analytics infrastructure supporting Fortune 500 client contractual obligations</div>
+                </div>
+                <div class="rationale"><h4><i class="bi bi-lightbulb"></i> Decision Rationale</h4>
+                    <div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">DataFlow Analytics, a Fortune 500 data analytics provider, required SOC 2 Type II audit preparation to meet contractual obligations with enterprise clients. As Compliance Manager, the engagement involved documenting controls against Trust Services Criteria across 4 in-scope systems handling sensitive client business intelligence data, including personal data subject to regulatory notification requirements.</div></div>
+                    <div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">Control effectiveness ratings were calibrated against the sensitivity of the data environment. Given DataFlow's Fortune 500 client base and the personal and confidential business data processed, controls that might be rated Partially Effective in a lower-risk environment were escalated to Ineffective where permanent uncontrolled access to production data was identified. Incident response controls were evaluated not only for procedural completeness but for regulatory notification compliance given the personal data processing scope.</div></div>
+                    <div class="rationale-item"><div class="rationale-label">Challenges</div><div class="rationale-text">Balancing control effectiveness ratings in a data-sensitive environment required applying business context beyond technical compliance checkboxes. Production access controls and antimalware management presented the most complex assessments — both controls existed formally but evidence demonstrated gaps that, given the Fortune 500 client data at stake, justified Ineffective ratings rather than Partially Effective.</div></div>
+                    <div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">Delivered a complete SOC 2 Type II control documentation package across all 12 Trust Services Criteria controls, providing DataFlow with a clear remediation roadmap. The assessment identified 2 critical control failures and 5 partially effective controls requiring improvement prior to the audit observation period, enabling the organization to prioritize remediation efforts and protect its enterprise client relationships.</div></div>
                 </div>
             </div>
         </div>
