@@ -37,6 +37,7 @@
         .badge-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; }
         .badge-orange { background: rgba(249, 115, 22, 0.2); color: #fb923c; }
         .badge-purple { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+        .badge-cyan { background: rgba(6, 182, 212, 0.2); color: #22d3ee; }
         .metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
         .metric { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 16px; text-align: center; }
         .metric-value { font-size: 24px; font-weight: 700; color: #60a5fa; }
@@ -57,6 +58,7 @@
         .architecture-note code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 4px; font-size: 12px; color: #e2e8f0; }
         .tool-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 12px; padding: 24px; margin-bottom: 16px; }
         .tool-item-purple { border-color: rgba(139, 92, 246, 0.25); }
+        .tool-item-cyan { border-color: rgba(6, 182, 212, 0.25); }
         .tool-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
         .tool-name { font-size: 17px; font-weight: 700; color: #f8fafc; }
         .tool-description { font-size: 14px; color: #94a3b8; margin-bottom: 14px; }
@@ -64,11 +66,15 @@
         .tool-metric { background: rgba(255,255,255,0.05); border-radius: 6px; padding: 10px; text-align: center; }
         .tool-metric-value { font-size: 16px; font-weight: 700; color: #34d399; }
         .tool-metric-value-purple { color: #a78bfa; }
+        .tool-metric-value-cyan { color: #22d3ee; }
         .tool-metric-label { font-size: 10px; color: #94a3b8; }
+        .tool-links { display: flex; gap: 8px; flex-wrap: wrap; }
         .tool-link { display: inline-flex; align-items: center; gap: 6px; color: #34d399; font-size: 13px; text-decoration: none; padding: 6px 14px; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 6px; transition: all 0.2s; }
         .tool-link:hover { background: rgba(16, 185, 129, 0.1); }
         .tool-link-purple { color: #a78bfa; border-color: rgba(139, 92, 246, 0.3); }
         .tool-link-purple:hover { background: rgba(139, 92, 246, 0.1); }
+        .tool-link-cyan { color: #22d3ee; border-color: rgba(6, 182, 212, 0.3); }
+        .tool-link-cyan:hover { background: rgba(6, 182, 212, 0.1); }
         .skills-section { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 32px; margin-top: 48px; }
         .skills-section h3 { font-size: 18px; margin-bottom: 20px; }
         .skills-grid { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -89,7 +95,7 @@
         <div class="stats-grid">
             <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Projects</div></div>
             <div class="stat-card"><div class="stat-value">7</div><div class="stat-label">Frameworks</div></div>
-            <div class="stat-card"><div class="stat-value stat-value-green">4</div><div class="stat-label">Tools Deployed</div></div>
+            <div class="stat-card"><div class="stat-value stat-value-green">5</div><div class="stat-label">Tools Deployed</div></div>
             <div class="stat-card"><div class="stat-value stat-value-green">1</div><div class="stat-label">Tools in Development</div></div>
         </div>
 
@@ -291,6 +297,37 @@
                 </a>
             </div>
 
+            <div class="tool-item tool-item-cyan">
+                <div class="tool-header">
+                    <div>
+                        <div class="tool-name">Synthetic Monitoring Tool</div>
+                        <div class="tool-description">Continuously monitors availability, latency, SSL certificate health, security headers, and content integrity of web assets. Correlates content hash changes against GitHub commit history to detect unauthorized modifications. Generates structured audit evidence on every run and delivers deduplicated alerts via SES. Maps to SOC 2 A1.1, SOC 2 A1.2, SOC 2 CC8.1, NIST AU-12, and ISO 27001 A.12.1.</div>
+                    </div>
+                    <span class="badge badge-cyan">✓ Live</span>
+                </div>
+                <div class="tool-metrics">
+                    <div class="tool-metric"><div class="tool-metric-value tool-metric-value-cyan">5</div><div class="tool-metric-label">Frameworks</div></div>
+                    <div class="tool-metric"><div class="tool-metric-value tool-metric-value-cyan">60min</div><div class="tool-metric-label">Check Interval</div></div>
+                    <div class="tool-metric"><div class="tool-metric-value tool-metric-value-cyan">Live</div><div class="tool-metric-label">Dashboard</div></div>
+                </div>
+                <div class="bullets" style="margin-bottom: 14px;">
+                    <div class="bullet bullet-green">SSL certificate validation — days remaining, expiry date, issuer, and TLS version on every run</div>
+                    <div class="bullet bullet-green">Security header audit mapped to ISO 27001, NIST, and SOC 2 controls</div>
+                    <div class="bullet bullet-green">Content integrity via SHA-256 hash correlation with GitHub commit history</div>
+                    <div class="bullet bullet-green">Unauthorized change detection — alerts when content changes without a corresponding GitHub commit</div>
+                    <div class="bullet bullet-green">Deduplicated SES alerting — email sent only on state transitions, not on every check</div>
+                    <div class="bullet bullet-green">Timestamped audit reports saved to S3 and metrics streamed to InfluxDB + Grafana</div>
+                </div>
+                <div class="tool-links">
+                    <a class="tool-link tool-link-cyan" href="https://github.com/cjmolinac/GRC-Portfolio/tree/main/tools/synthetic-monitor" target="_blank">
+                        <i class="bi bi-github"></i> View on GitHub
+                    </a>
+                    <a class="tool-link tool-link-cyan" href="https://cmportfolio.grafana.net/public-dashboards/60f1e30763fb48f2a9f57c0a50f8dcc4" target="_blank">
+                        <i class="bi bi-graph-up"></i> Live Dashboard
+                    </a>
+                </div>
+            </div>
+
             <div class="tool-item tool-item-purple">
                 <div class="tool-header">
                     <div>
@@ -351,6 +388,8 @@
                 <span class="skill-tag skill-tag-green">AWS CloudFront</span>
                 <span class="skill-tag skill-tag-green">GitHub Actions</span>
                 <span class="skill-tag skill-tag-green">CI/CD Pipelines</span>
+                <span class="skill-tag skill-tag-green">InfluxDB</span>
+                <span class="skill-tag skill-tag-green">Grafana</span>
                 <span class="skill-tag skill-tag-green">GRC Automation</span>
             </div>
         </div>
