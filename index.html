@@ -3,410 +3,1039 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GRC Portfolio - Carlos Molina GRC Professional</title>
+    <title>GRC Portfolio — Carlos Molina</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --navy:       #0d2340;
+            --navy-mid:   #163354;
+            --navy-light: #1e4a7a;
+            --accent:     #c8993a;
+            --accent-lt:  #e8b85a;
+            --stone:      #f5f2ee;
+            --stone-mid:  #e8e3dc;
+            --stone-dark: #d0c9be;
+            --ink:        #1a1a1a;
+            --ink-mid:    #3d3d3d;
+            --ink-light:  #6b6b6b;
+            --white:      #ffffff;
+            --green:      #1e6b4a;
+            --green-lt:   #e8f4ee;
+            --red-lt:     #fdf0f0;
+            --red:        #8b2020;
+            --border:     #ddd8d0;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0f172a, #1e3a5f); min-height: 100vh; color: #e2e8f0; line-height: 1.6; }
-        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
-        .header { text-align: center; margin-bottom: 48px; }
-        .header h1 { font-size: 36px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header p { color: #94a3b8; font-size: 18px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
-        .stat-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; text-align: center; }
-        .stat-value { font-size: 32px; font-weight: 700; color: #60a5fa; }
-        .stat-value-green { color: #34d399; }
-        .stat-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
-        .tabs { display: flex; gap: 4px; margin-bottom: 32px; background: rgba(255,255,255,0.03); border-radius: 12px; padding: 6px; }
-        .tab-btn { flex: 1; padding: 14px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 600; transition: all 0.2s; background: transparent; color: #64748b; }
-        .tab-btn.active.tab-labs { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
-        .tab-btn.active.tab-toolkit { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--stone);
+            color: var(--ink);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ───────────────────────────────────────────── */
+        .site-header {
+            background: var(--navy);
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .site-header::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -80px;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(200,153,58,0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .header-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 56px 32px 48px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            align-items: end;
+        }
+
+        .header-eyebrow {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 14px;
+        }
+
+        .header-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 42px;
+            color: var(--white);
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        .header-title {
+            font-size: 15px;
+            color: rgba(255,255,255,0.55);
+            font-weight: 300;
+            letter-spacing: 0.3px;
+        }
+
+        .header-certs {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .cert-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 4px;
+            padding: 7px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.75);
+            white-space: nowrap;
+        }
+
+        .cert-badge i { color: var(--accent); font-size: 13px; }
+
+        .header-rule {
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--accent-lt) 40%, transparent 100%);
+        }
+
+        /* ── STATS BAR ────────────────────────────────────────── */
+        .stats-bar {
+            background: var(--navy-mid);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .stats-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .stat-item {
+            padding: 20px 0;
+            text-align: center;
+            border-right: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .stat-item:last-child { border-right: none; }
+
+        .stat-num {
+            font-family: 'DM Serif Display', serif;
+            font-size: 28px;
+            color: var(--accent-lt);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stat-lbl {
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            font-weight: 500;
+        }
+
+        /* ── NAV TABS ─────────────────────────────────────────── */
+        .nav-wrap {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+        }
+
+        .nav-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            gap: 0;
+        }
+
+        .tab-btn {
+            padding: 16px 28px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ink-light);
+            border-bottom: 3px solid transparent;
+            margin-bottom: -1px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover { color: var(--navy); }
+
+        .tab-btn.active {
+            color: var(--navy);
+            border-bottom-color: var(--accent);
+        }
+
+        /* ── MAIN CONTENT ─────────────────────────────────────── */
+        .main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 32px 80px;
+        }
+
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .lab-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 32px; }
-        .lab-stat { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.15); border-radius: 10px; padding: 16px; text-align: center; }
-        .lab-stat-value { font-size: 26px; font-weight: 700; color: #60a5fa; }
-        .lab-stat-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
-        .project-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 32px; margin-bottom: 24px; }
-        .project-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-        .project-title { font-size: 22px; font-weight: 700; color: #f8fafc; }
-        .project-subtitle { font-size: 14px; color: #94a3b8; margin-top: 4px; }
-        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; margin-right: 6px; margin-bottom: 4px; }
-        .badge-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
-        .badge-green { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
-        .badge-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-        .badge-orange { background: rgba(249, 115, 22, 0.2); color: #fb923c; }
-        .badge-purple { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
-        .badge-cyan { background: rgba(6, 182, 212, 0.2); color: #22d3ee; }
-        .metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
-        .metric { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 16px; text-align: center; }
-        .metric-value { font-size: 24px; font-weight: 700; color: #60a5fa; }
-        .metric-label { font-size: 11px; color: #94a3b8; }
-        .bullets { margin-bottom: 24px; }
-        .bullets h4 { font-size: 14px; color: #94a3b8; margin-bottom: 12px; }
-        .bullet { padding: 12px 16px; background: rgba(255,255,255,0.02); border-left: 3px solid #60a5fa; margin-bottom: 8px; border-radius: 0 8px 8px 0; font-size: 14px; }
-        .bullet-green { border-left-color: #34d399; }
-        .rationale { background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1)); border-radius: 12px; padding: 24px; margin-top: 20px; }
-        .rationale h4 { font-size: 14px; color: #a78bfa; margin-bottom: 16px; }
+
+        /* ── CASE STUDY SUMMARY BAR ───────────────────────────── */
+        .summary-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 36px;
+        }
+
+        .summary-cell {
+            background: var(--white);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .summary-num {
+            font-family: 'DM Serif Display', serif;
+            font-size: 32px;
+            color: var(--navy);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .summary-lbl {
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--ink-light);
+            font-weight: 500;
+        }
+
+        /* ── PROJECT CARD ─────────────────────────────────────── */
+        .project-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 24px;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .project-card:hover { box-shadow: 0 4px 20px rgba(13,35,64,0.08); }
+
+        .card-header {
+            padding: 28px 32px 20px;
+            border-bottom: 1px solid var(--stone-mid);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .card-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 22px;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+
+        .card-subtitle {
+            font-size: 13px;
+            color: var(--ink-light);
+            font-weight: 400;
+        }
+
+        .card-badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge-navy { background: rgba(13,35,64,0.08); color: var(--navy); }
+        .badge-complete { background: var(--green-lt); color: var(--green); }
+        .badge-live { background: rgba(200,153,58,0.12); color: #8a6520; }
+        .badge-dev { background: var(--stone-mid); color: var(--ink-light); }
+
+        /* ── METRICS ROW ──────────────────────────────────────── */
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--stone-mid);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .metric {
+            background: var(--stone);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 22px;
+            color: var(--navy);
+            line-height: 1;
+            margin-bottom: 3px;
+        }
+
+        .metric-lbl {
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--ink-light);
+            font-weight: 500;
+        }
+
+        /* ── CARD BODY ────────────────────────────────────────── */
+        .card-body { padding: 24px 32px; }
+
+        .findings-title {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--ink-light);
+            margin-bottom: 12px;
+        }
+
+        .finding-item {
+            display: flex;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--stone-mid);
+            font-size: 13.5px;
+            color: var(--ink-mid);
+            line-height: 1.5;
+        }
+
+        .finding-item:last-child { border-bottom: none; }
+
+        .finding-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            margin-top: 7px;
+            flex-shrink: 0;
+        }
+
+        /* ── RATIONALE BLOCK ──────────────────────────────────── */
+        .rationale {
+            margin-top: 20px;
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--navy);
+            border-radius: 0 6px 6px 0;
+            overflow: hidden;
+        }
+
+        .rationale-head {
+            background: var(--navy);
+            padding: 10px 18px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.7);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rationale-head i { color: var(--accent); }
+
+        .rationale-body { padding: 20px 20px; }
+
         .rationale-item { margin-bottom: 16px; }
-        .rationale-label { font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
-        .rationale-text { font-size: 14px; color: #e2e8f0; }
-        .toolkit-intro { font-size: 14px; color: #94a3b8; margin-bottom: 28px; line-height: 1.7; }
-        .architecture-note { background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 20px; margin-bottom: 28px; }
-        .architecture-note h4 { font-size: 13px; color: #a5b4fc; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .architecture-note p { font-size: 13px; color: #94a3b8; line-height: 1.6; }
-        .architecture-note code { background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 4px; font-size: 12px; color: #e2e8f0; }
-        .tool-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 12px; padding: 24px; margin-bottom: 16px; }
-        .tool-item-purple { border-color: rgba(139, 92, 246, 0.25); }
-        .tool-item-cyan { border-color: rgba(6, 182, 212, 0.25); }
-        .tool-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
-        .tool-name { font-size: 17px; font-weight: 700; color: #f8fafc; }
-        .tool-description { font-size: 14px; color: #94a3b8; margin-bottom: 14px; }
-        .tool-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
-        .tool-metric { background: rgba(255,255,255,0.05); border-radius: 6px; padding: 10px; text-align: center; }
-        .tool-metric-value { font-size: 16px; font-weight: 700; color: #34d399; }
-        .tool-metric-value-purple { color: #a78bfa; }
-        .tool-metric-value-cyan { color: #22d3ee; }
-        .tool-metric-label { font-size: 10px; color: #94a3b8; }
-        .tool-links { display: flex; gap: 8px; flex-wrap: wrap; }
-        .tool-link { display: inline-flex; align-items: center; gap: 6px; color: #34d399; font-size: 13px; text-decoration: none; padding: 6px 14px; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 6px; transition: all 0.2s; }
-        .tool-link:hover { background: rgba(16, 185, 129, 0.1); }
-        .tool-link-purple { color: #a78bfa; border-color: rgba(139, 92, 246, 0.3); }
-        .tool-link-purple:hover { background: rgba(139, 92, 246, 0.1); }
-        .tool-link-cyan { color: #22d3ee; border-color: rgba(6, 182, 212, 0.3); }
-        .tool-link-cyan:hover { background: rgba(6, 182, 212, 0.1); }
-        .skills-section { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 32px; margin-top: 48px; }
-        .skills-section h3 { font-size: 18px; margin-bottom: 20px; }
-        .skills-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-        .skill-tag { background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; font-size: 13px; }
-        .skill-tag-green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-        .footer { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); color: #64748b; font-size: 13px; }
-        .footer-pipeline { font-size: 11px; color: #475569; margin-top: 8px; }
+        .rationale-item:last-child { margin-bottom: 0; }
+
+        .rationale-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .rationale-text {
+            font-size: 13.5px;
+            color: var(--ink-mid);
+            line-height: 1.65;
+        }
+
+        /* ── TOOLKIT ──────────────────────────────────────────── */
+        .toolkit-intro {
+            font-size: 14px;
+            color: var(--ink-mid);
+            line-height: 1.75;
+            margin-bottom: 28px;
+            padding: 20px 24px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 6px 6px 0;
+        }
+
+        .arch-note {
+            background: var(--navy);
+            border-radius: 8px;
+            padding: 22px 26px;
+            margin-bottom: 28px;
+        }
+
+        .arch-note-title {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .arch-note p {
+            font-size: 13.5px;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.65;
+        }
+
+        .arch-note code {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            color: var(--accent-lt);
+            font-family: 'Courier New', monospace;
+        }
+
+        /* ── TOOL CARD ────────────────────────────────────────── */
+        .tool-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .tool-card:hover { box-shadow: 0 4px 20px rgba(13,35,64,0.08); }
+
+        .tool-card-head {
+            padding: 22px 26px 16px;
+            border-bottom: 1px solid var(--stone-mid);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tool-name {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+
+        .tool-desc {
+            font-size: 13px;
+            color: var(--ink-light);
+            line-height: 1.55;
+            max-width: 580px;
+        }
+
+        .tool-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--stone-mid);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tool-metric {
+            background: var(--stone);
+            padding: 13px;
+            text-align: center;
+        }
+
+        .tool-metric-val {
+            font-family: 'DM Serif Display', serif;
+            font-size: 20px;
+            color: var(--navy);
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .tool-metric-lbl {
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--ink-light);
+        }
+
+        .tool-body { padding: 18px 26px; }
+
+        .tool-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+
+        .tool-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: var(--navy);
+            text-decoration: none;
+            padding: 7px 16px;
+            border: 1px solid var(--navy-light);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .tool-link:hover {
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        .tool-link-gold {
+            color: #7a5c1e;
+            border-color: var(--accent);
+        }
+
+        .tool-link-gold:hover {
+            background: var(--accent);
+            color: var(--white);
+            border-color: var(--accent);
+        }
+
+        /* ── COMING SOON ──────────────────────────────────────── */
+        .coming-soon {
+            background: var(--stone);
+            border: 1px dashed var(--stone-dark);
+            border-radius: 10px;
+            padding: 22px 26px;
+            margin-bottom: 16px;
+        }
+
+        .coming-soon-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--ink-light);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .coming-soon-desc {
+            font-size: 13px;
+            color: var(--ink-light);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        /* ── SKILLS ───────────────────────────────────────────── */
+        .skills-section {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 28px 32px;
+            margin-top: 44px;
+        }
+
+        .skills-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 20px;
+            color: var(--navy);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .skills-group { margin-bottom: 16px; }
+        .skills-group:last-child { margin-bottom: 0; }
+
+        .skills-group-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--ink-light);
+            margin-bottom: 8px;
+        }
+
+        .skills-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+        .skill-tag {
+            padding: 5px 12px;
+            border-radius: 3px;
+            font-size: 12.5px;
+            font-weight: 500;
+            background: var(--stone);
+            color: var(--ink-mid);
+            border: 1px solid var(--border);
+        }
+
+        .skill-tag-tech {
+            background: rgba(13,35,64,0.06);
+            color: var(--navy-mid);
+            border-color: rgba(13,35,64,0.12);
+        }
+
+        /* ── FOOTER ───────────────────────────────────────────── */
+        .site-footer {
+            background: var(--navy);
+            padding: 24px 32px;
+            text-align: center;
+        }
+
+        .footer-inner {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .footer-name {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 4px;
+        }
+
+        .footer-pipeline {
+            font-size: 11px;
+            color: rgba(255,255,255,0.25);
+        }
+
+        /* ── RESPONSIVE ───────────────────────────────────────── */
+        @media (max-width: 640px) {
+            .header-inner { grid-template-columns: 1fr; gap: 20px; }
+            .header-certs { align-items: flex-start; }
+            .header-name { font-size: 30px; }
+            .stats-inner { grid-template-columns: repeat(2, 1fr); }
+            .metrics-row { grid-template-columns: repeat(2, 1fr); }
+            .main { padding: 24px 16px 60px; }
+            .card-header, .card-body, .tool-card-head, .tool-body { padding-left: 20px; padding-right: 20px; }
+            .tab-btn { padding: 14px 16px; font-size: 13px; }
+            .summary-bar { grid-template-columns: repeat(3, 1fr); }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
 
-        <div class="header">
-            <h1>🛡️ Carlos Molina GRC Professional</h1>
-            <p>GRC Professional Portfolio</p>
+    <!-- ── HEADER ─────────────────────────────────────────────── -->
+    <header class="site-header">
+        <div class="header-inner">
+            <div>
+                <div class="header-eyebrow">GRC Professional Portfolio</div>
+                <h1 class="header-name">Carlos J. Molina</h1>
+                <p class="header-title">ISO 27001 Lead Auditor &nbsp;·&nbsp; MS Cybersecurity &nbsp;·&nbsp; J.D. &nbsp;·&nbsp; BS Computer Science</p>
+            </div>
+            <div class="header-certs">
+                <div class="cert-badge"><i class="bi bi-patch-check-fill"></i> ISO 27001 Lead Auditor</div>
+                <div class="cert-badge"><i class="bi bi-shield-fill"></i> MS Cybersecurity</div>
+                <div class="cert-badge"><i class="bi bi-briefcase-fill"></i> Law Degree (J.D. Equiv.)</div>
+            </div>
         </div>
+        <div class="header-rule"></div>
+    </header>
 
-        <div class="stats-grid">
-            <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Projects</div></div>
-            <div class="stat-card"><div class="stat-value">7</div><div class="stat-label">Frameworks</div></div>
-            <div class="stat-card"><div class="stat-value stat-value-green">5</div><div class="stat-label">Tools Deployed</div></div>
-            <div class="stat-card"><div class="stat-value stat-value-green">1</div><div class="stat-label">Tools in Development</div></div>
+    <!-- ── STATS BAR ──────────────────────────────────────────── -->
+    <div class="stats-bar">
+        <div class="stats-inner">
+            <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">Case Studies</div></div>
+            <div class="stat-item"><div class="stat-num">7</div><div class="stat-lbl">Frameworks</div></div>
+            <div class="stat-item"><div class="stat-num">5</div><div class="stat-lbl">Tools Deployed</div></div>
+            <div class="stat-item"><div class="stat-num">1</div><div class="stat-lbl">In Development</div></div>
         </div>
+    </div>
 
-        <div class="tabs">
-            <button class="tab-btn tab-labs active" onclick="switchTab('labs')">
-                📋 Case Studies
+    <!-- ── NAV ────────────────────────────────────────────────── -->
+    <nav class="nav-wrap">
+        <div class="nav-inner">
+            <button class="tab-btn active" onclick="switchTab('labs')">
+                <i class="bi bi-folder2-open"></i> Case Studies
             </button>
-            <button class="tab-btn tab-toolkit" onclick="switchTab('toolkit')">
-                🔧 GRC Automation Toolkit
+            <button class="tab-btn" onclick="switchTab('toolkit')">
+                <i class="bi bi-tools"></i> GRC Automation Toolkit
             </button>
         </div>
+    </nav>
+
+    <!-- ── MAIN ───────────────────────────────────────────────── -->
+    <main class="main">
 
         <!-- TAB: CASE STUDIES -->
         <div id="tab-labs" class="tab-content active">
 
-            <div class="lab-stats">
-                <div class="lab-stat"><div class="lab-stat-value">9</div><div class="lab-stat-label">Assets</div></div>
-                <div class="lab-stat"><div class="lab-stat-value">13</div><div class="lab-stat-label">Risks</div></div>
-                <div class="lab-stat"><div class="lab-stat-value">23</div><div class="lab-stat-label">Controls</div></div>
+            <div class="summary-bar">
+                <div class="summary-cell"><div class="summary-num">9</div><div class="summary-lbl">Assets</div></div>
+                <div class="summary-cell"><div class="summary-num">13</div><div class="summary-lbl">Risks</div></div>
+                <div class="summary-cell"><div class="summary-num">23</div><div class="summary-lbl">Controls</div></div>
             </div>
 
+            <!-- CARD 1 -->
             <div class="project-card">
-                <div class="project-header">
+                <div class="card-header">
                     <div>
-                        <div class="project-title">TechStart Inc</div>
-                        <div class="project-subtitle">ISO 27001 Risk Assessment for Cloud Migration</div>
+                        <div class="card-title">TechStart Inc.</div>
+                        <div class="card-subtitle">ISO 27001 Risk Assessment — Cloud Migration</div>
                     </div>
-                    <div>
-                        <span class="badge badge-blue">ISO 27001</span>
-                        <span class="badge badge-blue">NIST CSF</span>
-                        <span class="badge badge-green">100%</span>
+                    <div class="card-badges">
+                        <span class="badge badge-navy">ISO 27001</span>
+                        <span class="badge badge-navy">NIST CSF</span>
+                        <span class="badge badge-complete">Complete</span>
                     </div>
                 </div>
                 <div class="metrics-row">
-                    <div class="metric"><div class="metric-value">4</div><div class="metric-label">Assets</div></div>
-                    <div class="metric"><div class="metric-value">5</div><div class="metric-label">Risks</div></div>
-                    <div class="metric"><div class="metric-value">5</div><div class="metric-label">Controls</div></div>
-                    <div class="metric"><div class="metric-value">4/4</div><div class="metric-label">Tasks</div></div>
+                    <div class="metric"><div class="metric-val">4</div><div class="metric-lbl">Assets</div></div>
+                    <div class="metric"><div class="metric-val">5</div><div class="metric-lbl">Risks</div></div>
+                    <div class="metric"><div class="metric-val">5</div><div class="metric-lbl">Controls</div></div>
+                    <div class="metric"><div class="metric-val">4/4</div><div class="metric-lbl">Tasks</div></div>
                 </div>
-                <div class="bullets"><h4>Key Accomplishments</h4>
-                    <div class="bullet">Conducted comprehensive asset inventory and classification for 4 information assets supporting ISO 27001 ISMS implementation</div>
-                    <div class="bullet">Performed risk assessment identifying 5 risks across cloud migration scope, including 3 critical and 2 high-severity risks requiring immediate attention</div>
-                    <div class="bullet">Implemented 5 security controls aligned with ISO 27001 Annex A requirements and NIST CSF</div>
-                    <div class="bullet">Developed 5 risk treatment plans with documented mitigation strategies, acceptance criteria, and residual risk calculations</div>
-                    <div class="bullet">Completed ISO 27001 risk assessment documentation supporting certification readiness for cloud infrastructure</div>
-                </div>
-                <div class="rationale"><h4><i class="bi bi-lightbulb"></i> Decision Rationale</h4>
-                    <div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">TechStart Inc. completed a cloud migration and required a formal post-migration risk assessment to validate that critical information security controls were properly implemented and operating effectively across key assets, ensuring compliance with ISO 27001 requirements.</div></div>
-                    <div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">Security tools for backup immutability (S3 Object Lock) and access analysis (AWS IAM Access Analyzer) were selected from the cloud provider's native catalog. This decision leveraged seamless platform integration and consolidated support responsibilities under a single vendor, reducing response complexity during critical incidents.</div></div>
-                    <div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">The organization gained a comprehensive map of its current information security posture in the new cloud environment, along with a structured plan to maintain and improve its security controls. This enables informed decision-making and provides an objective, verifiable, and auditable framework for ongoing risk management, significantly improving the maturity level of TechStart Inc.'s information security governance.</div></div>
+                <div class="card-body">
+                    <div class="findings-title">Key Accomplishments</div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Conducted comprehensive asset inventory and classification for 4 information assets supporting ISO 27001 ISMS implementation</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Performed risk assessment identifying 5 risks across cloud migration scope, including 3 critical and 2 high-severity risks requiring immediate attention</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Implemented 5 security controls aligned with ISO 27001 Annex A requirements and NIST CSF</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Developed 5 risk treatment plans with documented mitigation strategies, acceptance criteria, and residual risk calculations</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Completed ISO 27001 risk assessment documentation supporting certification readiness for cloud infrastructure</div></div>
+                    <div class="rationale">
+                        <div class="rationale-head"><i class="bi bi-lightbulb-fill"></i> Decision Rationale</div>
+                        <div class="rationale-body">
+                            <div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">TechStart Inc. completed a cloud migration and required a formal post-migration risk assessment to validate that critical information security controls were properly implemented and operating effectively across key assets, ensuring compliance with ISO 27001 requirements.</div></div>
+                            <div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">Security tools for backup immutability (S3 Object Lock) and access analysis (AWS IAM Access Analyzer) were selected from the cloud provider's native catalog. This decision leveraged seamless platform integration and consolidated support responsibilities under a single vendor, reducing response complexity during critical incidents.</div></div>
+                            <div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">The organization gained a comprehensive map of its current information security posture in the new cloud environment, along with a structured plan to maintain and improve its security controls — providing an objective, verifiable, and auditable framework for ongoing risk management.</div></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- CARD 2 -->
             <div class="project-card">
-                <div class="project-header">
+                <div class="card-header">
                     <div>
-                        <div class="project-title">FinSecure Banking</div>
-                        <div class="project-subtitle">Third-Party Risk Management for Payment Processor</div>
+                        <div class="card-title">FinSecure Banking</div>
+                        <div class="card-subtitle">Third-Party Risk Management — Payment Processor</div>
                     </div>
-                    <div>
-                        <span class="badge badge-blue">PCI DSS</span>
-                        <span class="badge badge-blue">SOC 2</span>
-                        <span class="badge badge-green">100%</span>
+                    <div class="card-badges">
+                        <span class="badge badge-navy">PCI DSS</span>
+                        <span class="badge badge-navy">SOC 2</span>
+                        <span class="badge badge-complete">Complete</span>
                     </div>
                 </div>
                 <div class="metrics-row">
-                    <div class="metric"><div class="metric-value">1</div><div class="metric-label">Assets</div></div>
-                    <div class="metric"><div class="metric-value">4</div><div class="metric-label">Risks</div></div>
-                    <div class="metric"><div class="metric-value">6</div><div class="metric-label">Controls</div></div>
-                    <div class="metric"><div class="metric-value">4/4</div><div class="metric-label">Tasks</div></div>
+                    <div class="metric"><div class="metric-val">1</div><div class="metric-lbl">Vendor</div></div>
+                    <div class="metric"><div class="metric-val">4</div><div class="metric-lbl">Risks</div></div>
+                    <div class="metric"><div class="metric-val">6</div><div class="metric-lbl">Controls</div></div>
+                    <div class="metric"><div class="metric-val">4/4</div><div class="metric-lbl">Tasks</div></div>
                 </div>
-                <div class="bullets"><h4>Key Accomplishments</h4>
-                    <div class="bullet">Conducted third-party security assessments for 1 vendor, evaluating security posture against PCI DSS and SOC 2 requirements</div>
-                    <div class="bullet">Identified and documented 4 vendor-related security risks impacting payment card data environment</div>
-                    <div class="bullet">Verified implementation of 6 compensating controls for third-party payment processor integration</div>
-                    <div class="bullet">Documented 3 compliance gaps and coordinated remediation efforts</div>
-                    <div class="bullet">Established ongoing vendor monitoring program with quarterly security assessments and contract compliance reviews</div>
-                </div>
-                <div class="rationale"><h4><i class="bi bi-lightbulb"></i> Decision Rationale</h4>
-                    <div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">FinSecure Banking required integration with PaySecure Solutions, a third-party payment processor with direct access to customer cardholder data. Given the sensitivity of the data involved and OCC regulatory obligations, a formal third-party risk assessment was required to evaluate PaySecure's security posture, verify PCI DSS and SOC 2 compliance, and ensure cardholder data protection prior to contract execution.</div></div>
-                    <div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">PCI DSS and SOC 2 were selected as the primary evaluation frameworks, as they directly govern payment card data security and third-party service provider attestation requirements. While ISO 27001 controls were considered as an alternative framework, PCI DSS requirements were prioritized as they are mandated by the payment card industry regulators and directly applicable to PaySecure's operating environment.</div></div>
-                    <div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">FinSecure established minimum security and compliance requirements for third-party payment processor integration, ensuring cardholder data protection aligned with PCI DSS and OCC regulations. The assessment also prompted an internal review of FinSecure's own compliance controls and contract management practices, resulting in strengthened vendor contract terms including specific regulatory obligations, penalty clauses, and remediation timelines for future third-party engagements.</div></div>
+                <div class="card-body">
+                    <div class="findings-title">Key Accomplishments</div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Conducted third-party security assessment evaluating vendor security posture against PCI DSS and SOC 2 requirements</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Identified and documented 4 vendor-related security risks impacting the payment card data environment</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Verified implementation of 6 compensating controls for third-party payment processor integration</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Documented 3 compliance gaps and coordinated remediation efforts with the vendor</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Established ongoing vendor monitoring program with quarterly security assessments and contract compliance reviews</div></div>
+                    <div class="rationale">
+                        <div class="rationale-head"><i class="bi bi-lightbulb-fill"></i> Decision Rationale</div>
+                        <div class="rationale-body">
+                            <div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">FinSecure Banking required integration with PaySecure Solutions, a third-party payment processor with direct access to customer cardholder data. Given the sensitivity of the data and OCC regulatory obligations, a formal third-party risk assessment was required to evaluate PaySecure's security posture and verify PCI DSS and SOC 2 compliance prior to contract execution.</div></div>
+                            <div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">PCI DSS and SOC 2 were selected as the primary evaluation frameworks as they directly govern payment card data security and third-party service provider attestation requirements. ISO 27001 controls were considered as an alternative but PCI DSS requirements were prioritized as mandated by the payment card industry.</div></div>
+                            <div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">FinSecure established minimum security and compliance requirements for third-party payment processor integration. The assessment also prompted strengthened vendor contract terms including specific regulatory obligations, penalty clauses, and remediation timelines for future third-party engagements.</div></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- CARD 3 -->
             <div class="project-card">
-                <div class="project-header">
+                <div class="card-header">
                     <div>
-                        <div class="project-title">DataFlow Analytics</div>
-                        <div class="project-subtitle">SOC 2 Type II Audit Preparation</div>
+                        <div class="card-title">DataFlow Analytics</div>
+                        <div class="card-subtitle">SOC 2 Type II Audit Preparation</div>
                     </div>
-                    <div>
-                        <span class="badge badge-blue">SOC 2</span>
-                        <span class="badge badge-blue">NIST CSF</span>
-                        <span class="badge badge-green">100%</span>
+                    <div class="card-badges">
+                        <span class="badge badge-navy">SOC 2</span>
+                        <span class="badge badge-navy">NIST CSF</span>
+                        <span class="badge badge-complete">Complete</span>
                     </div>
                 </div>
                 <div class="metrics-row">
-                    <div class="metric"><div class="metric-value">4</div><div class="metric-label">Assets</div></div>
-                    <div class="metric"><div class="metric-value">12</div><div class="metric-label">Controls</div></div>
-                    <div class="metric"><div class="metric-value">42%</div><div class="metric-label">Effectiveness</div></div>
-                    <div class="metric"><div class="metric-value">4/4</div><div class="metric-label">Tasks</div></div>
+                    <div class="metric"><div class="metric-val">4</div><div class="metric-lbl">Assets</div></div>
+                    <div class="metric"><div class="metric-val">12</div><div class="metric-lbl">Controls</div></div>
+                    <div class="metric"><div class="metric-val">42%</div><div class="metric-lbl">Effectiveness</div></div>
+                    <div class="metric"><div class="metric-val">4/4</div><div class="metric-lbl">Tasks</div></div>
                 </div>
-                <div class="bullets"><h4>Key Accomplishments</h4>
-                    <div class="bullet">Documented 12 SOC 2 Trust Services Criteria controls for DataFlow Analytics, a Fortune 500 data analytics provider, identifying 2 ineffective and 5 partially effective controls requiring remediation prior to audit observation period</div>
-                    <div class="bullet">Conducted control gap analysis across 4 in-scope systems revealing critical findings in production access control and antimalware management, with ineffective ratings supported by documented evidence and field-validated rationale</div>
-                    <div class="bullet">Evaluated change management, incident response, and business continuity controls against SOC 2 and NIST CSF requirements, assessing RTO/RPO alignment and regulatory notification obligations</div>
-                    <div class="bullet">Assessed backup compliance, log retention integrity, and user lifecycle management controls across cloud-based analytics infrastructure supporting Fortune 500 client contractual obligations</div>
-                </div>
-                <div class="rationale"><h4><i class="bi bi-lightbulb"></i> Decision Rationale</h4>
-                    <div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">DataFlow Analytics, a Fortune 500 data analytics provider, required SOC 2 Type II audit preparation to meet contractual obligations with enterprise clients. As Compliance Manager, the engagement involved documenting controls against Trust Services Criteria across 4 in-scope systems handling sensitive client business intelligence data, including personal data subject to regulatory notification requirements.</div></div>
-                    <div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">Control effectiveness ratings were calibrated against the sensitivity of the data environment. Given DataFlow's Fortune 500 client base and the personal and confidential business data processed, controls that might be rated Partially Effective in a lower-risk environment were escalated to Ineffective where permanent uncontrolled access to production data was identified. Incident response controls were evaluated not only for procedural completeness but for regulatory notification compliance given the personal data processing scope.</div></div>
-                    <div class="rationale-item"><div class="rationale-label">Challenges</div><div class="rationale-text">Balancing control effectiveness ratings in a data-sensitive environment required applying business context beyond technical compliance checkboxes. Production access controls and antimalware management presented the most complex assessments — both controls existed formally but evidence demonstrated gaps that, given the Fortune 500 client data at stake, justified Ineffective ratings rather than Partially Effective.</div></div>
-                    <div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">Delivered a complete SOC 2 Type II control documentation package across all 12 Trust Services Criteria controls, providing DataFlow with a clear remediation roadmap. The assessment identified 2 critical control failures and 5 partially effective controls requiring improvement prior to the audit observation period, enabling the organization to prioritize remediation efforts and protect its enterprise client relationships.</div></div>
+                <div class="card-body">
+                    <div class="findings-title">Key Accomplishments</div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Documented 12 SOC 2 Trust Services Criteria controls for a Fortune 500 data analytics provider, identifying 2 ineffective and 5 partially effective controls requiring remediation prior to audit observation period</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Conducted control gap analysis across 4 in-scope systems revealing critical findings in production access control and antimalware management</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Evaluated change management, incident response, and business continuity controls against SOC 2 and NIST CSF requirements, assessing RTO/RPO alignment and regulatory notification obligations</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Assessed backup compliance, log retention integrity, and user lifecycle management controls across cloud-based analytics infrastructure supporting Fortune 500 client contractual obligations</div></div>
+                    <div class="rationale">
+                        <div class="rationale-head"><i class="bi bi-lightbulb-fill"></i> Decision Rationale</div>
+                        <div class="rationale-body">
+                            <div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">DataFlow Analytics required SOC 2 Type II audit preparation to meet contractual obligations with enterprise clients. The engagement involved documenting controls against Trust Services Criteria across 4 in-scope systems handling sensitive client business intelligence data, including personal data subject to regulatory notification requirements.</div></div>
+                            <div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">Control effectiveness ratings were calibrated against the sensitivity of the data environment. Given DataFlow's Fortune 500 client base, controls with uncontrolled permanent access to production data were escalated to Ineffective rather than Partially Effective — a judgment call grounded in the actual risk, not the procedural checklist.</div></div>
+                            <div class="rationale-item"><div class="rationale-label">Challenges</div><div class="rationale-text">Balancing control effectiveness ratings in a data-sensitive environment required applying business context beyond technical compliance checkboxes. Production access controls and antimalware management presented the most complex assessments — both controls existed formally but evidence demonstrated gaps that justified Ineffective ratings given the data at stake.</div></div>
+                            <div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">Delivered a complete SOC 2 Type II control documentation package across all 12 Trust Services Criteria controls, identifying 2 critical control failures and 5 partially effective controls — enabling the organization to prioritize remediation efforts before the audit observation period.</div></div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
 
-        <!-- TAB: GRC AUTOMATION TOOLKIT -->
+        <!-- TAB: TOOLKIT -->
         <div id="tab-toolkit" class="tab-content">
 
             <p class="toolkit-intro">
-                A growing collection of AWS Lambda functions and automation tools that operationalize GRC controls — from compliance checking to auditable deployments. Each tool generates structured reports with control references, severity classifications, and remediation recommendations — ready for audit evidence packages.
+                A growing collection of AWS Lambda functions and automation tools that operationalize GRC controls — from compliance checking to auditable deployments. Each tool generates structured reports with control references, severity classifications, and remediation recommendations ready for audit evidence packages.
             </p>
 
-            <div class="architecture-note">
-                <h4>🏗️ Shared Audit Evidence Architecture</h4>
-                <p>All tools in this toolkit write their reports to a centralized S3 bucket (<code>grc-audit-reports/</code>), organized by tool name and timestamp. This design decision mirrors how mature GRC programs consolidate audit evidence — a single repository accessible to auditors, with consistent naming conventions and retention policies applied uniformly across all controls.</p>
+            <div class="arch-note">
+                <div class="arch-note-title">Shared Audit Evidence Architecture</div>
+                <p>All tools write their reports to a centralized S3 bucket (<code>grc-audit-reports/</code>), organized by tool name and timestamp. This design mirrors how mature GRC programs consolidate audit evidence — a single repository accessible to auditors, with consistent naming conventions and retention policies applied uniformly across all controls.</p>
             </div>
 
-            <div class="tool-item">
-                <div class="tool-header">
+            <!-- MFA -->
+            <div class="tool-card">
+                <div class="tool-card-head">
                     <div>
                         <div class="tool-name">MFA Compliance Checker</div>
-                        <div class="tool-description">Audits all IAM users for MFA enrollment. Classifies findings by severity based on console access. Maps to ISO 27001 A.8.5, NIST SP 800-53 IA-2, and SOC 2 CC6.1.</div>
+                        <div class="tool-desc">Audits all IAM users for MFA enrollment. Classifies findings by severity based on console access. Maps to ISO 27001 A.8.5, NIST SP 800-53 IA-2, and SOC 2 CC6.1.</div>
                     </div>
-                    <span class="badge badge-emerald">✓ Deployed</span>
+                    <span class="badge badge-complete">✓ Deployed</span>
                 </div>
                 <div class="tool-metrics">
-                    <div class="tool-metric"><div class="tool-metric-value">3</div><div class="tool-metric-label">Frameworks</div></div>
-                    <div class="tool-metric"><div class="tool-metric-value">2</div><div class="tool-metric-label">Severity Levels</div></div>
-                    <div class="tool-metric"><div class="tool-metric-value">&lt;3s</div><div class="tool-metric-label">Execution Time</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">3</div><div class="tool-metric-lbl">Frameworks</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">2</div><div class="tool-metric-lbl">Severity Levels</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">&lt;3s</div><div class="tool-metric-lbl">Execution Time</div></div>
                 </div>
-                <div class="bullets" style="margin-bottom: 14px;">
-                    <div class="bullet bullet-green">Detects users with console access and no MFA — classified as HIGH severity</div>
-                    <div class="bullet bullet-green">Detects service accounts without MFA — classified as MEDIUM severity</div>
-                    <div class="bullet bullet-green">Generates structured JSON report with finding IDs, control references, and remediation recommendations</div>
+                <div class="tool-body">
+                    <div class="findings-title">Capabilities</div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Detects users with console access and no MFA — classified as HIGH severity</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Detects service accounts without MFA — classified as MEDIUM severity</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Generates structured JSON report with finding IDs, control references, and remediation recommendations</div></div>
+                    <div class="tool-links">
+                        <a class="tool-link" href="https://github.com/cjmolinac/GRC-Portfolio/tree/main/tools/mfa-compliance-checker" target="_blank"><i class="bi bi-github"></i> View on GitHub</a>
+                    </div>
                 </div>
-                <a class="tool-link" href="https://github.com/cjmolinac/GRC-Portfolio/tree/main/tools/mfa-compliance-checker" target="_blank">
-                    <i class="bi bi-github"></i> View on GitHub
-                </a>
             </div>
 
-            <div class="tool-item">
-                <div class="tool-header">
+            <!-- ACCESS LIFECYCLE -->
+            <div class="tool-card">
+                <div class="tool-card-head">
                     <div>
                         <div class="tool-name">Access Lifecycle Manager</div>
-                        <div class="tool-description">Automates suspend, reactivate, and terminate actions on IAM users. Saves complete user state to S3 for exact restoration. Generates structured audit trail for every action. Maps to ISO 27001 A.5.18, NIST AC-2, and SOC 2 CC6.2.</div>
+                        <div class="tool-desc">Automates suspend, reactivate, and terminate actions on IAM users. Saves complete user state to S3 for exact restoration. Generates structured audit trail for every action. Maps to ISO 27001 A.5.18, NIST AC-2, and SOC 2 CC6.2.</div>
                     </div>
-                    <span class="badge badge-emerald">✓ Deployed</span>
+                    <span class="badge badge-complete">✓ Deployed</span>
                 </div>
                 <div class="tool-metrics">
-                    <div class="tool-metric"><div class="tool-metric-value">3</div><div class="tool-metric-label">Frameworks</div></div>
-                    <div class="tool-metric"><div class="tool-metric-value">3</div><div class="tool-metric-label">Actions</div></div>
-                    <div class="tool-metric"><div class="tool-metric-value">S3</div><div class="tool-metric-label">Audit Trail</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">3</div><div class="tool-metric-lbl">Frameworks</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">3</div><div class="tool-metric-lbl">Actions</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">S3</div><div class="tool-metric-lbl">Audit Trail</div></div>
                 </div>
-                <div class="bullets" style="margin-bottom: 14px;">
-                    <div class="bullet bullet-green">SUSPEND — disables access and saves complete user state to S3 for restoration</div>
-                    <div class="bullet bullet-green">REACTIVATE — restores user exactly as before suspension, removes suspension record</div>
-                    <div class="bullet bullet-green">TERMINATE — permanently removes all access with full audit documentation</div>
+                <div class="tool-body">
+                    <div class="findings-title">Capabilities</div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>SUSPEND — disables access and saves complete user state to S3 for restoration</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>REACTIVATE — restores user exactly as before suspension, removes suspension record</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>TERMINATE — permanently removes all access with full audit documentation</div></div>
+                    <div class="tool-links">
+                        <a class="tool-link" href="https://github.com/cjmolinac/GRC-Portfolio/tree/main/tools/access-lifecycle-manager" target="_blank"><i class="bi bi-github"></i> View on GitHub</a>
+                    </div>
                 </div>
-                <a class="tool-link" href="https://github.com/cjmolinac/GRC-Portfolio/tree/main/tools/access-lifecycle-manager" target="_blank">
-                    <i class="bi bi-github"></i> View on GitHub
-                </a>
             </div>
 
-            <div class="tool-item">
-                <div class="tool-header">
+            <!-- RDS -->
+            <div class="tool-card">
+                <div class="tool-card-head">
                     <div>
                         <div class="tool-name">RDS Backup Compliance Checker</div>
-                        <div class="tool-description">Audits all RDS instances for backup configuration compliance. Detects disabled backups, insufficient retention periods, and unencrypted storage. Delivers findings via structured JSON report saved to S3 and optional email summary. Maps to ISO 27001 A.8.13, NIST SP 800-53 CP-9, and SOC 2 CC9.1.</div>
+                        <div class="tool-desc">Audits all RDS instances for backup configuration compliance. Detects disabled backups, insufficient retention periods, and unencrypted storage. Maps to ISO 27001 A.8.13, NIST SP 800-53 CP-9, and SOC 2 CC9.1.</div>
                     </div>
-                    <span class="badge badge-emerald">✓ Deployed</span>
+                    <span class="badge badge-complete">✓ Deployed</span>
                 </div>
                 <div class="tool-metrics">
-                    <div class="tool-metric"><div class="tool-metric-value">3</div><div class="tool-metric-label">Frameworks</div></div>
-                    <div class="tool-metric"><div class="tool-metric-value">3</div><div class="tool-metric-label">Finding Types</div></div>
-                    <div class="tool-metric"><div class="tool-metric-value">Email</div><div class="tool-metric-label">Delivery Option</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">3</div><div class="tool-metric-lbl">Frameworks</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">3</div><div class="tool-metric-lbl">Finding Types</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">Email</div><div class="tool-metric-lbl">Delivery Option</div></div>
                 </div>
-                <div class="bullets" style="margin-bottom: 14px;">
-                    <div class="bullet bullet-green">Detects RDS instances with automated backups fully disabled — classified as CRITICAL</div>
-                    <div class="bullet bullet-green">Detects retention periods below the 7-day policy minimum — classified as HIGH or MEDIUM</div>
-                    <div class="bullet bullet-green">Detects unencrypted instance storage — backup snapshots inherit the same exposure</div>
-                    <div class="bullet bullet-green">Saves timestamped JSON report to centralized S3 audit evidence bucket</div>
-                    <div class="bullet bullet-green">Optional email delivery — pass send_email, sender_email, and email_to in the event payload</div>
+                <div class="tool-body">
+                    <div class="findings-title">Capabilities</div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Detects RDS instances with automated backups fully disabled — classified as CRITICAL</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Detects retention periods below the 7-day policy minimum — classified as HIGH or MEDIUM</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Detects unencrypted instance storage — backup snapshots inherit the same exposure</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Saves timestamped JSON report to centralized S3 audit evidence bucket</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Optional email delivery — pass send_email, sender_email, and email_to in the event payload</div></div>
+                    <div class="tool-links">
+                        <a class="tool-link" href="https://github.com/cjmolinac/GRC-Portfolio/tree/main/tools/rds-backup-checker" target="_blank"><i class="bi bi-github"></i> View on GitHub</a>
+                    </div>
                 </div>
-                <a class="tool-link" href="https://github.com/cjmolinac/GRC-Portfolio/tree/main/tools/rds-backup-checker" target="_blank">
-                    <i class="bi bi-github"></i> View on GitHub
-                </a>
             </div>
 
-            <div class="tool-item tool-item-cyan">
-                <div class="tool-header">
+            <!-- SYNTHETIC MONITOR -->
+            <div class="tool-card">
+                <div class="tool-card-head">
                     <div>
                         <div class="tool-name">Synthetic Monitoring Tool</div>
-                        <div class="tool-description">Continuously monitors availability, latency, SSL certificate health, security headers, and content integrity of web assets. Correlates content hash changes against GitHub commit history to detect unauthorized modifications. Generates structured audit evidence on every run and delivers deduplicated alerts via SES. Maps to SOC 2 A1.1, SOC 2 A1.2, SOC 2 CC8.1, NIST AU-12, and ISO 27001 A.12.1.</div>
+                        <div class="tool-desc">Continuously monitors availability, latency, SSL certificate health, security headers, and content integrity. Correlates content hash changes against GitHub commit history to detect unauthorized modifications. Maps to SOC 2 A1.1, A1.2, CC8.1, NIST AU-12, and ISO 27001 A.12.1.</div>
                     </div>
-                    <span class="badge badge-cyan">✓ Live</span>
+                    <span class="badge badge-live">✓ Live</span>
                 </div>
                 <div class="tool-metrics">
-                    <div class="tool-metric"><div class="tool-metric-value tool-metric-value-cyan">5</div><div class="tool-metric-label">Frameworks</div></div>
-                    <div class="tool-metric"><div class="tool-metric-value tool-metric-value-cyan">60min</div><div class="tool-metric-label">Check Interval</div></div>
-                    <div class="tool-metric"><div class="tool-metric-value tool-metric-value-cyan">Live</div><div class="tool-metric-label">Dashboard</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">5</div><div class="tool-metric-lbl">Frameworks</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">60min</div><div class="tool-metric-lbl">Check Interval</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">Live</div><div class="tool-metric-lbl">Dashboard</div></div>
                 </div>
-                <div class="bullets" style="margin-bottom: 14px;">
-                    <div class="bullet bullet-green">SSL certificate validation — days remaining, expiry date, issuer, and TLS version on every run</div>
-                    <div class="bullet bullet-green">Security header audit mapped to ISO 27001, NIST, and SOC 2 controls</div>
-                    <div class="bullet bullet-green">Content integrity via SHA-256 hash correlation with GitHub commit history</div>
-                    <div class="bullet bullet-green">Unauthorized change detection — alerts when content changes without a corresponding GitHub commit</div>
-                    <div class="bullet bullet-green">Deduplicated SES alerting — email sent only on state transitions, not on every check</div>
-                    <div class="bullet bullet-green">Timestamped audit reports saved to S3 and metrics streamed to InfluxDB + Grafana</div>
-                </div>
-                <div class="tool-links">
-                    <a class="tool-link tool-link-cyan" href="https://github.com/cjmolinac/GRC-Portfolio/tree/main/tools/synthetic-monitor" target="_blank">
-                        <i class="bi bi-github"></i> View on GitHub
-                    </a>
-                    <a class="tool-link tool-link-cyan" href="https://cmportfolio.grafana.net/public-dashboards/60f1e30763fb48f2a9f57c0a50f8dcc4" target="_blank">
-                        <i class="bi bi-graph-up"></i> Live Dashboard
-                    </a>
+                <div class="tool-body">
+                    <div class="findings-title">Capabilities</div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>SSL certificate validation — days remaining, expiry date, issuer, and TLS version on every run</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Security header audit mapped to ISO 27001, NIST, and SOC 2 controls</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Content integrity via SHA-256 hash correlation with GitHub commit history</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Unauthorized change detection — alerts when content changes without a corresponding GitHub commit</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Deduplicated SES alerting — email sent only on state transitions, not on every check</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Timestamped audit reports saved to S3 and metrics streamed to InfluxDB + Grafana</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Third-party monitoring authorization contract template included — formalizes the Client's right to monitor vendor endpoints as a continuous assurance layer complementary to SOC 2</div></div>
+                    <div class="tool-links">
+                        <a class="tool-link" href="https://github.com/cjmolinac/GRC-Portfolio/tree/main/tools/synthetic-monitor" target="_blank"><i class="bi bi-github"></i> View on GitHub</a>
+                        <a class="tool-link tool-link-gold" href="https://cmportfolio.grafana.net/public-dashboards/60f1e30763fb48f2a9f57c0a50f8dcc4" target="_blank"><i class="bi bi-graph-up"></i> Live Dashboard</a>
+                    </div>
                 </div>
             </div>
 
-            <div class="tool-item tool-item-purple">
-                <div class="tool-header">
+            <!-- CI/CD -->
+            <div class="tool-card">
+                <div class="tool-card-head">
                     <div>
                         <div class="tool-name">CI/CD Deployment Pipeline</div>
-                        <div class="tool-description">Automated deployment of this portfolio using GitHub Actions, AWS S3, and CloudFront. Every push to main triggers a pipeline that syncs content, invalidates the CDN cache, and generates a complete audit trail — timestamp, commit hash, branch, and author — for every deployment event. Maps to SOC 2 CC8.1 and NIST SP 800-53 CM-3.</div>
+                        <div class="tool-desc">Automated deployment using GitHub Actions, AWS S3, and CloudFront. Every push to main triggers a pipeline that syncs content, invalidates the CDN cache, and generates a complete audit trail — timestamp, commit hash, branch, and author — for every deployment event. Maps to SOC 2 CC8.1 and NIST SP 800-53 CM-3.</div>
                     </div>
-                    <span class="badge badge-purple">✓ Live</span>
+                    <span class="badge badge-live">✓ Live</span>
                 </div>
                 <div class="tool-metrics">
-                    <div class="tool-metric"><div class="tool-metric-value tool-metric-value-purple">2</div><div class="tool-metric-label">Frameworks</div></div>
-                    <div class="tool-metric"><div class="tool-metric-value tool-metric-value-purple">&lt;15s</div><div class="tool-metric-label">Deploy Time</div></div>
-                    <div class="tool-metric"><div class="tool-metric-value tool-metric-value-purple">100%</div><div class="tool-metric-label">Automated</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">2</div><div class="tool-metric-lbl">Frameworks</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">&lt;15s</div><div class="tool-metric-lbl">Deploy Time</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">100%</div><div class="tool-metric-lbl">Automated</div></div>
                 </div>
-                <div class="bullets" style="margin-bottom: 14px;">
-                    <div class="bullet bullet-green">Every deployment is traceable to a specific commit — change management with full audit trail</div>
-                    <div class="bullet bullet-green">AWS credentials stored as encrypted GitHub Secrets — never exposed in code or logs</div>
-                    <div class="bullet bullet-green">Dedicated IAM user with least-privilege permissions — S3 and CloudFront only</div>
-                    <div class="bullet bullet-green">CloudFront cache invalidation on every deployment — users always see current content</div>
-                    <div class="bullet bullet-green">Ephemeral build environment — pipeline runner is created and destroyed per deployment</div>
+                <div class="tool-body">
+                    <div class="findings-title">Capabilities</div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Every deployment traceable to a specific commit — change management with full audit trail</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>AWS credentials stored as encrypted GitHub Secrets — never exposed in code or logs</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Dedicated IAM user with least-privilege permissions — S3 and CloudFront only</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>CloudFront cache invalidation on every deployment — users always see current content</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Ephemeral build environment — pipeline runner is created and destroyed per deployment</div></div>
+                    <div class="tool-links">
+                        <a class="tool-link" href="https://github.com/cjmolinac/GRC-Portfolio/blob/main/.github/workflows/deploy.yml" target="_blank"><i class="bi bi-github"></i> View Pipeline</a>
+                    </div>
                 </div>
-                <a class="tool-link tool-link-purple" href="https://github.com/cjmolinac/GRC-Portfolio/blob/main/.github/workflows/deploy.yml" target="_blank">
-                    <i class="bi bi-github"></i> View Pipeline on GitHub
-                </a>
             </div>
 
-            <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
-                <div style="font-size: 14px; font-weight: 600; color: #64748b; margin-bottom: 6px;">⏳ Third-Party Security Evaluator — In Development</div>
-                <div style="font-size: 13px; color: #94a3b8; margin-bottom: 10px;">Evaluates the external security posture of a vendor domain using public APIs — no internal access required. Aggregates findings from certificate validation, security headers, DNS configuration, and domain reputation into a single structured report with control references. Designed for GRC analysts conducting vendor assessments without waiting weeks for questionnaire responses.</div>
+            <!-- COMING SOON -->
+            <div class="coming-soon">
+                <div class="coming-soon-title"><i class="bi bi-hourglass-split"></i> Third-Party Security Evaluator — In Development</div>
+                <div class="coming-soon-desc">Evaluates the external security posture of a vendor domain using public APIs — no internal access required. Aggregates findings from certificate validation, security headers, DNS configuration, and domain reputation into a single structured report with control references. Designed for GRC analysts conducting vendor assessments without waiting weeks for questionnaire responses.</div>
                 <div>
-                    <span class="badge badge-blue">ISO 27001 A.5.19</span>
-                    <span class="badge badge-blue">NIST SR-6</span>
-                    <span class="badge badge-blue">SOC 2 CC9.2</span>
+                    <span class="badge badge-navy">ISO 27001 A.5.19</span>
+                    <span class="badge badge-navy">NIST SR-6</span>
+                    <span class="badge badge-navy">SOC 2 CC9.2</span>
                 </div>
             </div>
 
         </div>
 
+        <!-- SKILLS -->
         <div class="skills-section">
-            <h3>Skills &amp; Frameworks</h3>
-            <div class="skills-grid">
-                <span class="skill-tag">Risk Assessment</span>
-                <span class="skill-tag">Control Testing</span>
-                <span class="skill-tag">Compliance Management</span>
-                <span class="skill-tag">Vendor Risk</span>
-                <span class="skill-tag">Policy Development</span>
-                <span class="skill-tag">ISO 27001</span>
-                <span class="skill-tag">NIST CSF</span>
-                <span class="skill-tag">SOC 2</span>
-                <span class="skill-tag">PCI DSS</span>
-                <span class="skill-tag">HIPAA</span>
-                <span class="skill-tag">GDPR</span>
-                <span class="skill-tag skill-tag-green">AWS Lambda</span>
-                <span class="skill-tag skill-tag-green">Python</span>
-                <span class="skill-tag skill-tag-green">AWS IAM</span>
-                <span class="skill-tag skill-tag-green">AWS S3</span>
-                <span class="skill-tag skill-tag-green">AWS RDS</span>
-                <span class="skill-tag skill-tag-green">AWS SES</span>
-                <span class="skill-tag skill-tag-green">AWS CloudFront</span>
-                <span class="skill-tag skill-tag-green">GitHub Actions</span>
-                <span class="skill-tag skill-tag-green">CI/CD Pipelines</span>
-                <span class="skill-tag skill-tag-green">InfluxDB</span>
-                <span class="skill-tag skill-tag-green">Grafana</span>
-                <span class="skill-tag skill-tag-green">GRC Automation</span>
+            <div class="skills-title">Skills &amp; Frameworks</div>
+            <div class="skills-group">
+                <div class="skills-group-label">GRC &amp; Compliance</div>
+                <div class="skills-tags">
+                    <span class="skill-tag">Risk Assessment</span>
+                    <span class="skill-tag">Control Testing</span>
+                    <span class="skill-tag">Compliance Management</span>
+                    <span class="skill-tag">Vendor Risk</span>
+                    <span class="skill-tag">Policy Development</span>
+                    <span class="skill-tag">ISO 27001</span>
+                    <span class="skill-tag">NIST CSF</span>
+                    <span class="skill-tag">SOC 2</span>
+                    <span class="skill-tag">PCI DSS</span>
+                    <span class="skill-tag">HIPAA</span>
+                    <span class="skill-tag">GDPR</span>
+                    <span class="skill-tag">CCPA</span>
+                </div>
+            </div>
+            <div class="skills-group" style="margin-top:16px;">
+                <div class="skills-group-label">Technical</div>
+                <div class="skills-tags">
+                    <span class="skill-tag skill-tag-tech">AWS Lambda</span>
+                    <span class="skill-tag skill-tag-tech">Python</span>
+                    <span class="skill-tag skill-tag-tech">AWS IAM</span>
+                    <span class="skill-tag skill-tag-tech">AWS S3</span>
+                    <span class="skill-tag skill-tag-tech">AWS RDS</span>
+                    <span class="skill-tag skill-tag-tech">AWS SES</span>
+                    <span class="skill-tag skill-tag-tech">AWS CloudFront</span>
+                    <span class="skill-tag skill-tag-tech">GitHub Actions</span>
+                    <span class="skill-tag skill-tag-tech">CI/CD Pipelines</span>
+                    <span class="skill-tag skill-tag-tech">InfluxDB</span>
+                    <span class="skill-tag skill-tag-tech">Grafana</span>
+                    <span class="skill-tag skill-tag-tech">GRC Automation</span>
+                </div>
             </div>
         </div>
 
-        <div class="footer">
-            Carlos J. Molina — GRC Professional &amp; ISO 27001 Lead Auditor • Updated April 2026
+    </main>
+
+    <!-- ── FOOTER ──────────────────────────────────────────────── -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-name">Carlos J. Molina — GRC Professional &amp; ISO 27001 Lead Auditor &nbsp;·&nbsp; Updated April 2026</div>
             <div class="footer-pipeline">Deployed automatically via GitHub Actions → AWS S3 + CloudFront</div>
         </div>
-    </div>
+    </footer>
 
     <script>
         function switchTab(tab) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tab).classList.add('active');
-            document.querySelector('.tab-' + tab).classList.add('active');
+            document.querySelector('.tab-btn[onclick="switchTab(\'' + tab + '\')"]').classList.add('active');
         }
     </script>
+
 </body>
 </html>
