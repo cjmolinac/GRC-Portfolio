@@ -155,6 +155,13 @@ The `ssl`, `socket`, `json`, `os`, `time`, `hashlib`, and `datetime` modules are
 
 ---
 
+## Third-Party Monitoring Authorization
+This tool is designed for deployment in third-party risk management contexts — not only for monitoring your own infrastructure, but for continuously verifying the external security posture of vendors and service providers.
+A contract template is included in the /legal directory. It formalizes the Client's right to monitor, defines the Monitored Surface, specifies Provider obligations (including non-interference and change notification), and establishes the audit evidence framework — including the IAM permissions and technical parameters required to operate this tool.
+Most vendor contracts include generic audit clauses ("the client may verify compliance") without defining what verification means technically. This template closes that gap by translating monitoring parameters directly into contractual obligations.
+
+---
+
 ## Part of the GRC Automation Toolkit
 
 **Also available:**
