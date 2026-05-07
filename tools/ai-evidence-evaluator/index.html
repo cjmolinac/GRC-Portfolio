@@ -1535,9 +1535,55 @@ Evaluate the auditee's responses.`;
       })
       .slice(0, 3);
 
-    const gapLines = topGaps.length
-      ? topGaps.map(g => `  • ${g.description}`).join('\n')
-      : '  • No significant gaps identified.';
+    // If Challenge was completed, only show gaps that were NOT defended successfully
+    // A gap is considered closed if its corresponding question was answered "strong"
+    let remainingGaps = [];
+    if (challengeData?.evaluations && challengeData?.questions) {
+      // Map weak/adequate challenge answers back to original gaps
+      const undefendedQuestions = challengeData.evaluations
+        .map((ev, i) => ({ ev, q: challengeData.questions[i] }))
+        .filter(item => item.ev.strength === 'weak' || item.ev.strength === 'adequate');
+      // If all questions were strong, no gaps remain
+      if (undefendedQuestions.length === 0) {
+        remainingGaps = [];
+      } else {
+        // Keep only critical/moderate gaps from initial eval — as proxy for unresolved issues
+        remainingGaps = (r.gaps || [])
+          .filter(g => g.severity === 'critical' || g.severity === 'moderate')
+          .slice(0, undefendedQuestions.length);
+      }
+    } else {
+      // No challenge run — show critical/moderate gaps from initial eval
+      remainingGaps = (r.gaps || []).filter(g => g.severity === 'critical' || g.severity === 'moderate');
+    }
+
+    const topGapsExec = remainingGaps.slice(0, 3);
+    const challengeRan = !!(challengeData?.evaluations);
+    const allStrong = challengeRan && challengeData.evaluations.every(e => e.strength === 'strong');
+
+    // Build gap lines — if challenge ran with adequate answers, surface minor observation
+    const adequateQuestions = challengeRan
+      ? challengeData.evaluations.filter(e => e.strength === 'adequate')
+      : [];
+    const weakQuestions = challengeRan
+      ? challengeData.evaluations.filter(e => e.strength === 'weak')
+      : [];
+
+    let gapLines;
+    if (topGapsExec.length > 0) {
+      // Critical or moderate gaps still open
+      gapLines = topGapsExec.map(g => `  • [${g.severity.toUpperCase()}] ${g.description}`).join('\n');
+    } else if (challengeRan && allStrong) {
+      // All questions defended strongly — clean bill
+      gapLines = '  • All identified gaps were successfully addressed during audit walkthrough. No open issues.';
+    } else if (challengeRan && adequateQuestions.length > 0 && weakQuestions.length === 0) {
+      // No critical/moderate gaps, but some adequate answers — surface as minor observation
+      const minorGaps = (r.gaps || []).filter(g => g.severity === 'minor').slice(0, adequateQuestions.length);
+      const minorLines = minorGaps.map(g => `  • [OBSERVATION] ${g.description}`).join('\n');
+      gapLines = minorLines + '\n  • Minor observations noted above. No critical or moderate findings. Full details in workpaper.';
+    } else {
+      gapLines = '  • No critical or moderate issues identified. Minor observations documented in full workpaper.';
+    }
 
     // Challenge result if available
     let challengeSection = '';
@@ -1578,9 +1624,11 @@ ${r.legal_defensibility}
 ${challengeSection}
 RECOMMENDED ACTION
 ------------------
-${topGaps.length > 0
-  ? `Address ${topGaps.filter(g => g.severity === 'critical').length} critical and ${topGaps.filter(g => g.severity === 'moderate').length} moderate findings before next audit cycle.`
-  : 'No immediate action required. Schedule next review per standard cycle.'}
+${topGapsExec.length > 0
+  ? `Address ${topGapsExec.filter(g => g.severity === 'critical').length} critical and ${topGapsExec.filter(g => g.severity === 'moderate').length} moderate findings before next audit cycle.`
+  : allStrong && challengeRan
+    ? 'No open findings. All gaps addressed during audit walkthrough. Maintain current documentation cycle.'
+    : 'No immediate action required. Schedule next review per standard cycle.'}
 
 ────────────────────────────────────
 Prepared by: Carlos J. Molina
@@ -1719,3 +1767,4 @@ Carlos J. Molina · GRC & Compliance Consultant · ISO 27001 Lead Auditor · Att
 </script>
 </body>
 </html>
+
