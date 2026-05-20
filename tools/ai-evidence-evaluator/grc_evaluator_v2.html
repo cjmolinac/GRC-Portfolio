@@ -1,0 +1,2422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRC AI Evidence Evaluator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0f0e0c;
+    --ink-muted: #5a5852;
+    --ink-faint: #9a9690;
+    --paper: #f7f4ef;
+    --paper-warm: #ede9e2;
+    --paper-rule: #d8d3cb;
+    --rule-heavy: #b0a89e;
+    --accent: #1a3a5c;
+    --accent-light: #e8eef5;
+    --effective: #0f4c35;
+    --effective-bg: #e8f5ee;
+    --partial: #7a4a00;
+    --partial-bg: #fdf3e0;
+    --ineffective: #6b1919;
+    --ineffective-bg: #faeaea;
+    --critical: #b91c1c;
+    --moderate: #b45309;
+    --minor: #1d4ed8;
+    --challenge-bg: #0f0e0c;
+    --challenge-accent: #c9a84c;
+    /* AI Governance mode colors */
+    --ai-accent: #2d1b69;
+    --ai-accent-light: #ede9f8;
+    --ai-accent-mid: #4a3080;
+    --ai-govern: #1a3a5c;
+    --ai-map: #0f4c35;
+    --ai-measure: #7a4a00;
+    --ai-manage: #4a1a5c;
+    --ai-high-risk: #b91c1c;
+    --ai-high-risk-bg: #fff0f0;
+    --ai-limited: #b45309;
+    --ai-limited-bg: #fffbf0;
+    --ai-minimal: #0f4c35;
+    --ai-minimal-bg: #f0faf4;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── Header ── */
+  .site-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2rem 0 1.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .site-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: repeating-linear-gradient(90deg, var(--paper-rule) 0, var(--paper-rule) 8px, transparent 8px, transparent 16px);
+  }
+
+  .header-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a8880;
+    margin-bottom: 0.5rem;
+  }
+
+  .header-title {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.6rem;
+  }
+
+  .header-sub {
+    font-size: 14px;
+    color: #a09c96;
+    font-style: italic;
+    max-width: 560px;
+  }
+
+  .header-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 1rem;
+  }
+
+  .header-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 1px solid #3a3834;
+    color: #7a7874;
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  .header-badge.ai-badge {
+    border-color: #4a3880;
+    color: #9a84c0;
+  }
+
+  /* ── Mode Switcher ── */
+  .mode-switcher {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--paper-rule);
+    background: var(--paper-warm);
+  }
+
+  .mode-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 14px 24px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--ink-faint);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mode-tab:hover { color: var(--ink-muted); }
+
+  .mode-tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+  }
+
+  .mode-tab.active.ai-tab {
+    color: var(--ai-accent);
+    border-bottom-color: var(--ai-accent);
+  }
+
+  .tab-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.6;
+  }
+
+  /* ── Main layout ── */
+  .main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 4rem;
+  }
+
+  /* ── Mode panels ── */
+  .mode-panel { display: none; }
+  .mode-panel.active { display: block; }
+
+  /* ── API key section ── */
+  .api-section {
+    background: var(--paper-warm);
+    border: 1px solid var(--rule-heavy);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .api-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .api-input {
+    flex: 1;
+    min-width: 220px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    background: var(--paper);
+    border: 1px solid var(--rule-heavy);
+    border-radius: 3px;
+    padding: 8px 12px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .api-input:focus { border-color: var(--accent); }
+
+  .api-note {
+    font-size: 11px;
+    color: var(--ink-faint);
+    font-style: italic;
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+
+  /* ── Form ── */
+  .form-section { margin-bottom: 2rem; }
+
+  .section-rule {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-rule h2 {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    white-space: nowrap;
+  }
+
+  .section-rule.ai-rule h2 { color: var(--ai-accent-mid); }
+
+  .section-rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--paper-rule);
+  }
+
+  .section-rule.ai-rule::after { background: var(--ai-accent-light); border: 1px solid #c8b8f0; }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .field-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 620px) {
+    .field-grid { grid-template-columns: 1fr; }
+    .field-grid-3 { grid-template-columns: 1fr; }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .field.ai-field label { color: var(--ai-accent-mid); }
+
+  .field select,
+  .field textarea {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--paper-rule);
+    border-radius: 3px;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .field select:focus,
+  .field textarea:focus { border-color: var(--accent); }
+
+  .ai-field select:focus,
+  .ai-field textarea:focus { border-color: var(--ai-accent); }
+
+  .field textarea { resize: vertical; line-height: 1.65; }
+
+  .char-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    text-align: right;
+  }
+
+  /* ── AI Governance Context Banner ── */
+  .ai-context-banner {
+    background: var(--ai-accent);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    color: #e8e0f8;
+  }
+
+  .ai-context-banner-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #c8b8f0;
+    margin-bottom: 0.4rem;
+  }
+
+  .ai-context-banner-text {
+    font-size: 13px;
+    line-height: 1.6;
+    font-style: italic;
+    color: #b8a8e8;
+  }
+
+  /* ── Risk Level Indicator ── */
+  .risk-indicator {
+    display: none;
+    padding: 10px 14px;
+    border-radius: 3px;
+    font-size: 12px;
+    margin-top: 8px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+
+  .risk-indicator.high { background: var(--ai-high-risk-bg); border-left: 3px solid var(--ai-high-risk); color: var(--ai-high-risk); }
+  .risk-indicator.limited { background: var(--ai-limited-bg); border-left: 3px solid var(--ai-limited); color: var(--ai-limited); }
+  .risk-indicator.minimal { background: var(--ai-minimal-bg); border-left: 3px solid var(--ai-minimal); color: var(--ai-minimal); }
+
+  /* ── Submit ── */
+  .submit-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .eval-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 3px;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+
+  .eval-btn.ai-btn { background: var(--ai-accent); }
+
+  .eval-btn:hover { opacity: 0.85; }
+  .eval-btn:active { transform: scale(0.98); }
+  .eval-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .eval-hint {
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  /* ── Loading ── */
+  .loading {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 2rem 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+  }
+
+  .loading.visible { display: flex; }
+
+  .loading-dots { display: flex; gap: 5px; }
+
+  .loading-dots span {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--ink-muted);
+    animation: dot-pulse 1.2s ease-in-out infinite;
+  }
+
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes dot-pulse {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 1; }
+  }
+
+  /* ── Result ── */
+  .result-wrap {
+    display: none;
+    margin-top: 2.5rem;
+    animation: fadeUp 0.35s ease;
+  }
+
+  .result-wrap.visible { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .verdict-card {
+    border: 1px solid var(--rule-heavy);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .verdict-card.ai-card { border-color: #c8b8f0; }
+
+  .verdict-head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.5rem;
+    border-bottom: 1px solid var(--paper-rule);
+  }
+
+  .verdict-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+
+  .v-effective .verdict-head { background: var(--effective-bg); }
+  .v-effective .verdict-badge { background: var(--effective); color: #fff; }
+
+  .v-partial .verdict-head { background: var(--partial-bg); }
+  .v-partial .verdict-badge { background: var(--partial); color: #fff; }
+
+  .v-ineffective .verdict-head { background: var(--ineffective-bg); }
+  .v-ineffective .verdict-badge { background: var(--ineffective); color: #fff; }
+
+  .verdict-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .verdict-score {
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .score-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-faint);
+    text-align: right;
+    margin-top: 2px;
+  }
+
+  .verdict-body {
+    background: #fff;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .result-block {}
+
+  .result-block-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .result-block-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--paper-rule);
+  }
+
+  .result-text {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  .gaps-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .gap-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink);
+    padding: 8px 10px;
+    background: var(--paper);
+    border-radius: 3px;
+    border-left: 3px solid transparent;
+  }
+
+  .gap-item.sev-critical { border-left-color: var(--critical); background: #fff5f5; }
+  .gap-item.sev-moderate { border-left-color: var(--moderate); background: #fffbf0; }
+  .gap-item.sev-minor    { border-left-color: var(--minor);    background: #f0f4ff; }
+
+  .gap-sev {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+    white-space: nowrap;
+    margin-top: 2px;
+    min-width: 52px;
+  }
+
+  .sev-critical .gap-sev { color: var(--critical); }
+  .sev-moderate .gap-sev { color: var(--moderate); }
+  .sev-minor    .gap-sev { color: var(--minor); }
+
+  .legal-box {
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    font-size: 13px;
+    font-style: italic;
+    line-height: 1.75;
+    color: #1a2d40;
+    border-radius: 0 3px 3px 0;
+  }
+
+  .legal-box.ai-legal {
+    background: var(--ai-accent-light);
+    border-left-color: var(--ai-accent);
+    color: #1a0d40;
+  }
+
+  .ref-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .ref-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    background: var(--paper-warm);
+    border: 1px solid var(--paper-rule);
+    padding: 4px 9px;
+    border-radius: 2px;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .ref-pill.ai-pill {
+    background: var(--ai-accent-light);
+    border-color: #c8b8f0;
+    color: var(--ai-accent-mid);
+  }
+
+  /* ── AI Governance Component Scores ── */
+  .component-scores {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  @media (max-width: 560px) { .component-scores { grid-template-columns: repeat(2, 1fr); } }
+
+  .component-score-item {
+    background: var(--paper);
+    border: 1px solid var(--paper-rule);
+    border-radius: 3px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+
+  .component-score-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+
+  .component-score-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .component-score-item.govern .component-score-value { color: var(--ai-govern); }
+  .component-score-item.map .component-score-value { color: var(--ai-map); }
+  .component-score-item.measure .component-score-value { color: var(--ai-measure); }
+  .component-score-item.manage .component-score-value { color: var(--ai-manage); }
+
+  /* ── EU AI Act Compliance Box ── */
+  .eu-compliance-box {
+    background: #fff;
+    border: 1px solid #c8b8f0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .eu-compliance-header {
+    background: var(--ai-accent);
+    padding: 10px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #c8b8f0;
+  }
+
+  .eu-compliance-body {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .eu-requirement {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  .eu-req-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .eu-req-status.met { background: var(--effective-bg); color: var(--effective); }
+  .eu-req-status.partial { background: var(--partial-bg); color: var(--partial); }
+  .eu-req-status.missing { background: var(--ineffective-bg); color: var(--ineffective); }
+
+  /* ── Actions ── */
+  .result-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--rule-heavy);
+    background: transparent;
+    color: var(--ink-muted);
+    padding: 8px 16px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .action-btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  .action-btn.primary {
+    background: var(--challenge-bg);
+    color: var(--challenge-accent);
+    border-color: var(--challenge-bg);
+    font-weight: 500;
+  }
+
+  .action-btn.primary:hover {
+    background: #2a2925;
+    border-color: #2a2925;
+  }
+
+  .action-btn.ai-primary {
+    background: var(--ai-accent);
+    color: #e8e0f8;
+    border-color: var(--ai-accent);
+    font-weight: 500;
+  }
+
+  .action-btn.ai-primary:hover {
+    background: var(--ai-accent-mid);
+    border-color: var(--ai-accent-mid);
+  }
+
+  .action-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* ── Error ── */
+  .error-msg {
+    display: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--ineffective);
+    background: var(--ineffective-bg);
+    border: 1px solid #e8b4b4;
+    border-radius: 3px;
+    padding: 10px 14px;
+    margin-top: 1rem;
+  }
+
+  .error-msg.visible { display: block; }
+
+  /* ═══════════════════════════════════════
+     AUDITOR CHALLENGE
+  ═══════════════════════════════════════ */
+
+  .challenge-wrap {
+    display: none;
+    margin-top: 2rem;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .challenge-wrap.visible { display: block; }
+
+  .challenge-banner {
+    background: var(--challenge-bg);
+    border-radius: 4px 4px 0 0;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .challenge-banner.ai-challenge-banner { background: var(--ai-accent); }
+
+  .challenge-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--challenge-accent);
+    opacity: 0.8;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .ai-challenge-banner .challenge-eyebrow { color: #c8b8f0; opacity: 1; }
+
+  .challenge-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #f7f4ef;
+    line-height: 1.2;
+  }
+
+  .challenge-sub {
+    font-size: 12px;
+    color: #6a6860;
+    font-style: italic;
+    margin-top: 3px;
+  }
+
+  .ai-challenge-banner .challenge-sub { color: #9888c8; }
+
+  .challenge-progress {
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--challenge-accent);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .ai-challenge-banner .challenge-progress { color: #c8b8f0; }
+
+  .challenge-questions {
+    background: #fff;
+    border: 1px solid var(--rule-heavy);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .challenge-q {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: fadeUp 0.3s ease both;
+  }
+
+  .challenge-q:nth-child(1) { animation-delay: 0.05s; }
+  .challenge-q:nth-child(2) { animation-delay: 0.1s; }
+  .challenge-q:nth-child(3) { animation-delay: 0.15s; }
+  .challenge-q:nth-child(4) { animation-delay: 0.2s; }
+  .challenge-q:nth-child(5) { animation-delay: 0.25s; }
+
+  .challenge-q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .challenge-q-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--challenge-accent);
+    background: var(--challenge-bg);
+    padding: 3px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .ai-mode .challenge-q-num { background: var(--ai-accent); color: #c8b8f0; }
+
+  .challenge-q-focus {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    background: var(--paper-warm);
+    border: 1px solid var(--paper-rule);
+    padding: 3px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .challenge-q-text {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--ink);
+    font-style: italic;
+  }
+
+  .challenge-q-context {
+    font-size: 12px;
+    color: var(--ink-muted);
+    line-height: 1.6;
+    border-left: 2px solid var(--paper-rule);
+    padding-left: 10px;
+    margin-top: 2px;
+  }
+
+  .challenge-answer {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--paper-rule);
+    border-radius: 3px;
+    padding: 10px 12px;
+    resize: vertical;
+    outline: none;
+    line-height: 1.65;
+    min-height: 80px;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+
+  .challenge-answer:focus { border-color: var(--accent); background: #fff; }
+  .challenge-answer.answered { border-color: var(--effective); background: #f8fdf9; }
+  .challenge-q.evaluated .challenge-answer { pointer-events: none; opacity: 0.75; }
+
+  .challenge-q-eval {
+    display: none;
+    padding: 10px 14px;
+    border-radius: 3px;
+    font-size: 13px;
+    line-height: 1.65;
+    margin-top: 4px;
+  }
+
+  .challenge-q-eval.visible { display: block; }
+  .challenge-q-eval.strong { background: var(--effective-bg); border-left: 3px solid var(--effective); color: #0a3325; }
+  .challenge-q-eval.weak   { background: var(--ineffective-bg); border-left: 3px solid var(--ineffective); color: #4a1010; }
+  .challenge-q-eval.adequate { background: var(--partial-bg); border-left: 3px solid var(--partial); color: #4a2e00; }
+
+  .eval-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-right: 6px;
+  }
+
+  .challenge-submit-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--paper-rule);
+  }
+
+  .challenge-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    flex: 1;
+  }
+
+  .challenge-final {
+    display: none;
+    margin-top: 1.5rem;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .challenge-final.visible { display: block; }
+
+  .challenge-final-card {
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--rule-heavy);
+  }
+
+  .challenge-final-head {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .challenge-final-head.audit-ready { background: var(--effective-bg); border-bottom: 1px solid #b8dfc8; }
+  .challenge-final-head.needs-remediation { background: var(--partial-bg); border-bottom: 1px solid #e8c97a; }
+  .challenge-final-head.audit-fail { background: var(--ineffective-bg); border-bottom: 1px solid #e8b4b4; }
+
+  .challenge-final-verdict {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .challenge-final-head.audit-ready .challenge-final-verdict { color: var(--effective); }
+  .challenge-final-head.needs-remediation .challenge-final-verdict { color: var(--partial); }
+  .challenge-final-head.audit-fail .challenge-final-verdict { color: var(--ineffective); }
+
+  .challenge-final-score {
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .challenge-final-head.audit-ready .challenge-final-score { color: var(--effective); }
+  .challenge-final-head.needs-remediation .challenge-final-score { color: var(--partial); }
+  .challenge-final-head.audit-fail .challenge-final-score { color: var(--ineffective); }
+
+  .challenge-final-body {
+    background: #fff;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .challenge-final-summary { font-size: 14px; line-height: 1.75; color: var(--ink); }
+
+  .challenge-final-rec {
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    font-size: 13px;
+    font-style: italic;
+    line-height: 1.75;
+    color: #1a2d40;
+    border-radius: 0 3px 3px 0;
+  }
+
+  .challenge-final-rec.ai-rec {
+    background: var(--ai-accent-light);
+    border-left-color: var(--ai-accent);
+    color: #1a0d40;
+  }
+
+  /* ── History ── */
+  .history-section { margin-top: 3rem; display: none; }
+  .history-section.visible { display: block; }
+
+  .history-item {
+    border: 1px solid var(--paper-rule);
+    border-radius: 3px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    font-size: 13px;
+    cursor: pointer;
+    background: #fff;
+    transition: border-color 0.15s;
+  }
+
+  .history-item:hover { border-color: var(--rule-heavy); }
+
+  .history-control-text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+
+  .history-verdict-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  /* ── Footer ── */
+  .site-footer {
+    border-top: 1px solid var(--paper-rule);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <p class="header-eyebrow">Carlos J. Molina · GRC Portfolio</p>
+    <h1 class="header-title">GRC AI Evidence Evaluator</h1>
+    <p class="header-sub">Evaluates whether submitted evidence would survive scrutiny from an external auditor, regulator, or legal proceeding — across traditional GRC controls and AI governance frameworks.</p>
+    <div class="header-badges">
+      <span class="header-badge">ISO 27001 · SOC 2 · NIST CSF · PCI DSS · HIPAA · GDPR</span>
+      <span class="header-badge ai-badge">NIST AI RMF · EU AI Act · Responsible AI</span>
+    </div>
+  </div>
+</header>
+
+<!-- Mode Switcher -->
+<div class="mode-switcher">
+  <button class="mode-tab active" id="tab-grc" onclick="switchMode('grc')">
+    <span class="tab-dot"></span>
+    GRC Controls
+  </button>
+  <button class="mode-tab ai-tab" id="tab-ai" onclick="switchMode('ai')">
+    <span class="tab-dot"></span>
+    AI Governance
+  </button>
+</div>
+
+<main class="main">
+
+  <!-- API Key (shared) -->
+  <div class="api-section">
+    <span class="api-label">Groq API Key</span>
+    <input type="password" class="api-input" id="api-key" placeholder="gsk_..." autocomplete="off" />
+    <span class="api-note">Your key is used locally and never stored or transmitted beyond the Groq API call. Get yours free at console.groq.com</span>
+  </div>
+
+  <!-- ══════════════════════════════════
+       MODE 1: GRC CONTROLS (original)
+  ══════════════════════════════════ -->
+  <div class="mode-panel active" id="panel-grc">
+
+    <section class="form-section">
+      <div class="section-rule"><h2>Control Definition</h2></div>
+
+      <div class="field-grid">
+        <div class="field">
+          <label for="framework">Framework / Standard</label>
+          <select id="framework">
+            <option value="ISO 27001:2022">ISO 27001:2022</option>
+            <option value="SOC 2 Type II">SOC 2 Type II</option>
+            <option value="NIST CSF 2.0">NIST CSF 2.0</option>
+            <option value="PCI DSS v4.0">PCI DSS v4.0</option>
+            <option value="HIPAA Security Rule">HIPAA Security Rule</option>
+            <option value="GDPR">GDPR</option>
+            <option value="General GRC">General GRC</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="category">Control Category</label>
+          <select id="category">
+            <option value="Access Control">Access Control</option>
+            <option value="Incident Management">Incident Management</option>
+            <option value="Vulnerability Management">Vulnerability Management</option>
+            <option value="Change Management">Change Management</option>
+            <option value="Business Continuity / DR">Business Continuity / DR</option>
+            <option value="Data Protection">Data Protection</option>
+            <option value="Third-Party Risk">Third-Party Risk</option>
+            <option value="Security Awareness Training">Security Awareness Training</option>
+            <option value="Physical Security">Physical Security</option>
+            <option value="Audit &amp; Logging">Audit &amp; Logging</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom:1rem">
+        <label for="control-stmt">Control Statement</label>
+        <textarea id="control-stmt" rows="3" placeholder="e.g. The organization requires multi-factor authentication (MFA) for all remote access to critical systems and performs quarterly access reviews."></textarea>
+        <span class="char-hint" id="control-chars">0 / 600</span>
+      </div>
+
+      <div class="field">
+        <label for="evidence-stmt">Evidence Submitted</label>
+        <textarea id="evidence-stmt" rows="5" placeholder="e.g. Screenshots of the MFA portal showing active configuration for 3 IT users, remote access policy version 2021, and an email from the system admin confirming MFA is enabled."></textarea>
+        <span class="char-hint" id="evidence-chars">0 / 1200</span>
+      </div>
+    </section>
+
+    <div class="submit-row">
+      <button class="eval-btn" id="eval-btn-grc" onclick="runEvalGRC()">Evaluate Evidence</button>
+      <span class="eval-hint">Evaluated with the rigor of an external auditor + regulatory lens</span>
+    </div>
+
+    <div class="loading" id="loading-grc">
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+      <span id="loading-msg-grc">Evaluating against selected standard...</span>
+    </div>
+
+    <div class="error-msg" id="error-msg-grc"></div>
+
+    <!-- GRC Result -->
+    <div class="result-wrap" id="result-wrap-grc">
+      <div class="section-rule" style="margin-bottom:1rem"><h2>Evaluation Result</h2></div>
+      <div class="verdict-card" id="verdict-card-grc">
+        <div class="verdict-head" id="verdict-head-grc">
+          <span class="verdict-badge" id="verdict-badge-grc"></span>
+          <span class="verdict-label" id="verdict-label-grc"></span>
+          <div style="margin-left:auto; text-align:right">
+            <div class="verdict-score" id="verdict-score-grc"></div>
+            <div class="score-label">Defensibility Score</div>
+          </div>
+        </div>
+        <div class="verdict-body">
+          <div class="result-block">
+            <div class="result-block-label">Audit Rationale</div>
+            <p class="result-text" id="result-rationale-grc"></p>
+          </div>
+          <div class="result-block" id="gaps-block-grc" style="display:none">
+            <div class="result-block-label">Identified Gaps</div>
+            <ul class="gaps-list" id="gaps-list-grc"></ul>
+          </div>
+          <div class="result-block">
+            <div class="result-block-label">Legal Defensibility</div>
+            <div class="legal-box" id="legal-box-grc"></div>
+          </div>
+          <div class="result-block" id="refs-block-grc" style="display:none">
+            <div class="result-block-label">Applicable References</div>
+            <div class="ref-pills" id="ref-pills-grc"></div>
+          </div>
+          <div class="result-actions" style="padding-top:1rem;border-top:1px solid var(--paper-rule);margin-top:0.5rem">
+            <button class="action-btn primary" id="challenge-btn-grc" onclick="startChallengeGRC()">▶ Run Auditor Challenge</button>
+            <button class="action-btn" onclick="copyReportGRC()">Copy Workpaper</button>
+            <button class="action-btn" id="exec-summary-btn-grc" onclick="copyExecSummaryGRC()">Export Exec Summary</button>
+            <button class="action-btn" onclick="clearAllGRC()">New Evaluation</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRC Challenge -->
+    <div class="challenge-wrap" id="challenge-wrap-grc">
+      <div class="challenge-banner">
+        <div>
+          <span class="challenge-eyebrow">Mode: Auditor Challenge</span>
+          <div class="challenge-title">Answer Like an Auditee</div>
+          <div class="challenge-sub">These are the exact questions an external auditor would ask. Your answers determine whether this control survives scrutiny.</div>
+        </div>
+        <div class="challenge-progress" id="challenge-progress-grc"></div>
+      </div>
+      <div class="challenge-questions" id="challenge-questions-grc"></div>
+      <div class="challenge-final" id="challenge-final-grc">
+        <div class="challenge-final-card">
+          <div class="challenge-final-head" id="challenge-final-head-grc">
+            <div>
+              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px">Audit Challenge Result</div>
+              <div class="challenge-final-verdict" id="challenge-final-verdict-grc"></div>
+            </div>
+            <div style="margin-left:auto;text-align:right">
+              <div class="challenge-final-score" id="challenge-final-score-grc"></div>
+              <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--ink-faint);margin-top:2px">Challenge Score</div>
+            </div>
+          </div>
+          <div class="challenge-final-body">
+            <p class="challenge-final-summary" id="challenge-final-summary-grc"></p>
+            <div class="challenge-final-rec" id="challenge-final-rec-grc"></div>
+          </div>
+        </div>
+        <div class="result-actions" style="margin-top:1rem">
+          <button class="action-btn" onclick="copyFullReportGRC()">Copy Full Report</button>
+          <button class="action-btn" onclick="clearAllGRC()">New Evaluation</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRC History -->
+    <div class="history-section" id="history-section-grc">
+      <div class="section-rule"><h2>Session History</h2></div>
+      <div id="history-list-grc"></div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════
+       MODE 2: AI GOVERNANCE (new)
+  ══════════════════════════════════ -->
+  <div class="mode-panel" id="panel-ai">
+
+    <div class="ai-context-banner">
+      <div class="ai-context-banner-title">AI Governance Evaluator</div>
+      <div class="ai-context-banner-text">Evaluates evidence of AI governance maturity against NIST AI RMF (GOVERN · MAP · MEASURE · MANAGE) and EU AI Act requirements for high-risk systems under Annex III. Designed for financial services and regulated environments.</div>
+    </div>
+
+    <section class="form-section">
+      <div class="section-rule ai-rule"><h2>AI System Definition</h2></div>
+
+      <div class="field-grid">
+        <div class="field ai-field">
+          <label for="ai-system-type">AI System Type</label>
+          <select id="ai-system-type" onchange="updateAIContext()">
+            <option value="Vendor AI Service">Vendor AI Service (e.g. fraud detection, credit scoring)</option>
+            <option value="Integrated Enterprise AI">Integrated Enterprise AI (e.g. Microsoft Copilot, Google Workspace AI)</option>
+            <option value="Consumer AI - Employee Use">Consumer AI — Employee Use (e.g. ChatGPT, Claude in browser)</option>
+            <option value="Internally Developed Model">Internally Developed Model</option>
+          </select>
+        </div>
+        <div class="field ai-field">
+          <label for="ai-governance-framework">Governance Framework</label>
+          <select id="ai-governance-framework">
+            <option value="NIST AI RMF">NIST AI RMF</option>
+            <option value="EU AI Act">EU AI Act</option>
+            <option value="NIST AI RMF + EU AI Act">Both — NIST AI RMF + EU AI Act</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-grid-3">
+        <div class="field ai-field">
+          <label for="ai-rmf-component">NIST AI RMF Component</label>
+          <select id="ai-rmf-component">
+            <option value="Full Cycle">Full Cycle (all components)</option>
+            <option value="GOVERN">GOVERN — Policies &amp; Accountability</option>
+            <option value="MAP">MAP — Context &amp; Risk Identification</option>
+            <option value="MEASURE">MEASURE — Risk Assessment &amp; Analysis</option>
+            <option value="MANAGE">MANAGE — Treatment &amp; Tracking</option>
+          </select>
+        </div>
+        <div class="field ai-field">
+          <label for="ai-risk-level">EU AI Act Risk Level</label>
+          <select id="ai-risk-level" onchange="updateRiskIndicator()">
+            <option value="High Risk - Annex III">High Risk — Annex III</option>
+            <option value="Limited Risk">Limited Risk</option>
+            <option value="Minimal Risk">Minimal Risk</option>
+            <option value="Not Applicable">Not Applicable</option>
+          </select>
+        </div>
+        <div class="field ai-field">
+          <label for="ai-evidence-type">Evidence Type</label>
+          <select id="ai-evidence-type">
+            <option value="Intake Documentation">Intake Documentation</option>
+            <option value="Risk Assessment">Risk Assessment</option>
+            <option value="Fairness Testing">Fairness &amp; Bias Testing</option>
+            <option value="Audit Trail">Audit Trail / Logs</option>
+            <option value="Policy &amp; Procedures">Policy &amp; Procedures</option>
+            <option value="Monitoring Metrics">Monitoring Metrics</option>
+            <option value="Use Case Registry">Use Case Registry / Inventory</option>
+            <option value="Human Oversight Documentation">Human Oversight Documentation</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Risk indicator -->
+      <div class="risk-indicator high" id="risk-indicator" style="display:block">
+        ⚠ High Risk (Annex III) — Requires technical documentation, conformity assessment, human oversight, accuracy &amp; robustness testing, and EU registration before deployment.
+      </div>
+
+      <div class="field ai-field" style="margin-bottom:1rem;margin-top:1rem">
+        <label for="ai-system-desc">AI System Description</label>
+        <textarea id="ai-system-desc" rows="3" placeholder="Describe the AI system: what does it do, what data does it use, what decisions does it make or support, who does it affect? (e.g. Vendor fraud detection system that automatically blocks customer transactions in real-time based on behavioral pattern analysis)"></textarea>
+        <span class="char-hint" id="ai-system-chars">0 / 600</span>
+      </div>
+
+      <div class="field ai-field">
+        <label for="ai-evidence-stmt">Evidence Submitted</label>
+        <textarea id="ai-evidence-stmt" rows="5" placeholder="Describe the governance evidence: intake forms, risk assessments, fairness testing results, approval documentation, policy documents, monitoring reports, use case registry entries, etc."></textarea>
+        <span class="char-hint" id="ai-evidence-chars">0 / 1200</span>
+      </div>
+    </section>
+
+    <div class="submit-row">
+      <button class="eval-btn ai-btn" id="eval-btn-ai" onclick="runEvalAI()">Evaluate AI Governance</button>
+      <span class="eval-hint">Evaluated against NIST AI RMF and EU AI Act requirements</span>
+    </div>
+
+    <div class="loading" id="loading-ai">
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+      <span id="loading-msg-ai">Evaluating AI governance evidence...</span>
+    </div>
+
+    <div class="error-msg" id="error-msg-ai"></div>
+
+    <!-- AI Governance Result -->
+    <div class="result-wrap" id="result-wrap-ai">
+      <div class="section-rule ai-rule" style="margin-bottom:1rem"><h2>AI Governance Evaluation</h2></div>
+      <div class="verdict-card ai-card" id="verdict-card-ai">
+        <div class="verdict-head" id="verdict-head-ai">
+          <span class="verdict-badge" id="verdict-badge-ai"></span>
+          <span class="verdict-label" id="verdict-label-ai"></span>
+          <div style="margin-left:auto; text-align:right">
+            <div class="verdict-score" id="verdict-score-ai"></div>
+            <div class="score-label">Governance Maturity Score</div>
+          </div>
+        </div>
+        <div class="verdict-body">
+
+          <!-- Component scores (NIST AI RMF) -->
+          <div class="result-block" id="component-scores-block" style="display:none">
+            <div class="result-block-label">NIST AI RMF Component Scores</div>
+            <div class="component-scores" id="component-scores"></div>
+          </div>
+
+          <div class="result-block">
+            <div class="result-block-label">Governance Assessment</div>
+            <p class="result-text" id="result-rationale-ai"></p>
+          </div>
+
+          <div class="result-block" id="gaps-block-ai" style="display:none">
+            <div class="result-block-label">Governance Gaps</div>
+            <ul class="gaps-list" id="gaps-list-ai"></ul>
+          </div>
+
+          <!-- EU AI Act compliance -->
+          <div class="result-block" id="eu-compliance-block" style="display:none">
+            <div class="result-block-label">EU AI Act Requirements</div>
+            <div class="eu-compliance-box">
+              <div class="eu-compliance-header">Annex III Compliance Assessment</div>
+              <div class="eu-compliance-body" id="eu-compliance-body"></div>
+            </div>
+          </div>
+
+          <div class="result-block">
+            <div class="result-block-label">Regulatory Defensibility</div>
+            <div class="legal-box ai-legal" id="legal-box-ai"></div>
+          </div>
+
+          <div class="result-block" id="refs-block-ai" style="display:none">
+            <div class="result-block-label">Applicable References</div>
+            <div class="ref-pills" id="ref-pills-ai"></div>
+          </div>
+
+          <div class="result-actions" style="padding-top:1rem;border-top:1px solid var(--paper-rule);margin-top:0.5rem">
+            <button class="action-btn ai-primary" id="challenge-btn-ai" onclick="startChallengeAI()">▶ Run AI Auditor Challenge</button>
+            <button class="action-btn" onclick="copyReportAI()">Copy Workpaper</button>
+            <button class="action-btn" onclick="clearAllAI()">New Evaluation</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Challenge -->
+    <div class="challenge-wrap" id="challenge-wrap-ai">
+      <div class="challenge-banner ai-challenge-banner">
+        <div>
+          <span class="challenge-eyebrow">Mode: AI Governance Challenge</span>
+          <div class="challenge-title">Defend Your AI Governance</div>
+          <div class="challenge-sub">Questions a regulator or EU AI Act auditor would ask. Defend the governance evidence you submitted.</div>
+        </div>
+        <div class="challenge-progress" id="challenge-progress-ai"></div>
+      </div>
+      <div class="challenge-questions ai-mode" id="challenge-questions-ai"></div>
+      <div class="challenge-final" id="challenge-final-ai">
+        <div class="challenge-final-card">
+          <div class="challenge-final-head" id="challenge-final-head-ai">
+            <div>
+              <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px">AI Governance Challenge Result</div>
+              <div class="challenge-final-verdict" id="challenge-final-verdict-ai"></div>
+            </div>
+            <div style="margin-left:auto;text-align:right">
+              <div class="challenge-final-score" id="challenge-final-score-ai"></div>
+              <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--ink-faint);margin-top:2px">Challenge Score</div>
+            </div>
+          </div>
+          <div class="challenge-final-body">
+            <p class="challenge-final-summary" id="challenge-final-summary-ai"></p>
+            <div class="challenge-final-rec ai-rec" id="challenge-final-rec-ai"></div>
+          </div>
+        </div>
+        <div class="result-actions" style="margin-top:1rem">
+          <button class="action-btn" onclick="copyFullReportAI()">Copy Full Report</button>
+          <button class="action-btn" onclick="clearAllAI()">New Evaluation</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI History -->
+    <div class="history-section" id="history-section-ai">
+      <div class="section-rule ai-rule"><h2>Session History</h2></div>
+      <div id="history-list-ai"></div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  Carlos J. Molina · GRC &amp; Compliance Consultant · ISO 27001 Lead Auditor · Attorney &nbsp;|&nbsp; Orlando, FL
+</footer>
+
+<script>
+  // ══════════════════════════════════════════
+  // STATE
+  // ══════════════════════════════════════════
+  const MAX_CONTROL = 600;
+  const MAX_EVIDENCE = 1200;
+
+  // GRC mode state
+  const grcHistory = [];
+  let lastGRCResult = null;
+  let grcChallengeData = null;
+
+  // AI mode state
+  const aiHistory = [];
+  let lastAIResult = null;
+  let aiChallengeData = null;
+
+  let loadingInterval = null;
+  let currentMode = 'grc';
+
+  // ══════════════════════════════════════════
+  // MODE SWITCHING
+  // ══════════════════════════════════════════
+  function switchMode(mode) {
+    currentMode = mode;
+    document.getElementById('panel-grc').classList.toggle('active', mode === 'grc');
+    document.getElementById('panel-ai').classList.toggle('active', mode === 'ai');
+    document.getElementById('tab-grc').classList.toggle('active', mode === 'grc');
+    document.getElementById('tab-ai').classList.toggle('active', mode === 'ai');
+  }
+
+  // ══════════════════════════════════════════
+  // RISK INDICATOR & CONTEXT
+  // ══════════════════════════════════════════
+  function updateRiskIndicator() {
+    const level = document.getElementById('ai-risk-level').value;
+    const indicator = document.getElementById('risk-indicator');
+    indicator.className = 'risk-indicator';
+
+    if (level === 'High Risk - Annex III') {
+      indicator.className = 'risk-indicator high';
+      indicator.style.display = 'block';
+      indicator.textContent = '⚠ High Risk (Annex III) — Requires technical documentation, conformity assessment, human oversight, accuracy & robustness testing, and EU registration before deployment.';
+    } else if (level === 'Limited Risk') {
+      indicator.className = 'risk-indicator limited';
+      indicator.style.display = 'block';
+      indicator.textContent = '▲ Limited Risk — Requires transparency obligations: users must be informed they are interacting with an AI system.';
+    } else if (level === 'Minimal Risk') {
+      indicator.className = 'risk-indicator minimal';
+      indicator.style.display = 'block';
+      indicator.textContent = '✓ Minimal Risk — No specific EU AI Act obligations. Voluntary codes of conduct recommended.';
+    } else {
+      indicator.style.display = 'none';
+    }
+  }
+
+  function updateAIContext() {
+    // Could update placeholder text based on system type — reserved for future enhancement
+  }
+
+  // ══════════════════════════════════════════
+  // CHAR COUNTERS
+  // ══════════════════════════════════════════
+  document.getElementById('control-stmt').addEventListener('input', function() {
+    const n = Math.min(this.value.length, MAX_CONTROL);
+    if (this.value.length > MAX_CONTROL) this.value = this.value.slice(0, MAX_CONTROL);
+    document.getElementById('control-chars').textContent = n + ' / ' + MAX_CONTROL;
+  });
+
+  document.getElementById('evidence-stmt').addEventListener('input', function() {
+    const n = Math.min(this.value.length, MAX_EVIDENCE);
+    if (this.value.length > MAX_EVIDENCE) this.value = this.value.slice(0, MAX_EVIDENCE);
+    document.getElementById('evidence-chars').textContent = n + ' / ' + MAX_EVIDENCE;
+  });
+
+  document.getElementById('ai-system-desc').addEventListener('input', function() {
+    const n = Math.min(this.value.length, MAX_CONTROL);
+    if (this.value.length > MAX_CONTROL) this.value = this.value.slice(0, MAX_CONTROL);
+    document.getElementById('ai-system-chars').textContent = n + ' / ' + MAX_CONTROL;
+  });
+
+  document.getElementById('ai-evidence-stmt').addEventListener('input', function() {
+    const n = Math.min(this.value.length, MAX_EVIDENCE);
+    if (this.value.length > MAX_EVIDENCE) this.value = this.value.slice(0, MAX_EVIDENCE);
+    document.getElementById('ai-evidence-chars').textContent = n + ' / ' + MAX_EVIDENCE;
+  });
+
+  // ══════════════════════════════════════════
+  // GROQ API
+  // ══════════════════════════════════════════
+  async function callGroq(apiKey, systemPrompt, userPrompt, maxTokens = 2048) {
+    const url = 'https://api.groq.com/openai/v1/chat/completions';
+    const body = JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      max_tokens: maxTokens,
+      temperature: 0.2,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt }
+      ]
+    });
+
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 4000;
+
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+        body
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.choices?.[0]?.message?.content || '';
+      }
+
+      const err = await response.json();
+      const msg = err.error?.message || 'API error ' + response.status;
+
+      if ((response.status === 429 || response.status === 503) && attempt < MAX_RETRIES) {
+        await new Promise(r => setTimeout(r, RETRY_DELAY));
+        continue;
+      }
+      throw new Error(msg);
+    }
+    throw new Error('Model is experiencing high demand. Please wait a moment and try again.');
+  }
+
+  function safeParseJSON(raw) {
+    let clean = raw.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+    const start = clean.indexOf('{');
+    const end = clean.lastIndexOf('}');
+    if (start !== -1 && end !== -1 && end > start) clean = clean.slice(start, end + 1);
+    try { return JSON.parse(clean); } catch (_) {}
+    try {
+      let fixed = clean;
+      const opens = (fixed.match(/\[/g) || []).length - (fixed.match(/\]/g) || []).length;
+      const braces = (fixed.match(/\{/g) || []).length - (fixed.match(/\}/g) || []).length;
+      for (let i = 0; i < opens; i++) fixed += ']';
+      for (let i = 0; i < braces; i++) fixed += '}';
+      return JSON.parse(fixed);
+    } catch (e) { throw new Error('Could not parse model response. (' + e.message + ')'); }
+  }
+
+  // ══════════════════════════════════════════
+  // LOADING HELPERS
+  // ══════════════════════════════════════════
+  function startLoading(msgId, messages) {
+    const el = document.getElementById('loading-' + msgId);
+    const msg = document.getElementById('loading-msg-' + msgId);
+    el.classList.add('visible');
+    let i = 0;
+    msg.textContent = messages[0];
+    loadingInterval = setInterval(() => {
+      i = (i + 1) % messages.length;
+      msg.textContent = messages[i];
+    }, 1800);
+  }
+
+  function stopLoading(msgId) {
+    clearInterval(loadingInterval);
+    document.getElementById('loading-' + msgId).classList.remove('visible');
+  }
+
+  function showError(id, msg) {
+    const el = document.getElementById('error-msg-' + id);
+    el.textContent = msg;
+    el.classList.add('visible');
+  }
+
+  function hideError(id) {
+    document.getElementById('error-msg-' + id).classList.remove('visible');
+  }
+
+  // ══════════════════════════════════════════
+  // GRC MODE — EVALUATION
+  // ══════════════════════════════════════════
+  async function runEvalGRC() {
+    const apiKey = document.getElementById('api-key').value.trim();
+    const framework = document.getElementById('framework').value;
+    const category = document.getElementById('category').value;
+    const control = document.getElementById('control-stmt').value.trim();
+    const evidence = document.getElementById('evidence-stmt').value.trim();
+
+    hideError('grc');
+    if (!apiKey) { showError('grc', 'Please enter your Groq API key.'); return; }
+    if (!control) { showError('grc', 'Please enter the control statement.'); return; }
+    if (!evidence) { showError('grc', 'Please describe the evidence being submitted.'); return; }
+
+    const btn = document.getElementById('eval-btn-grc');
+    btn.disabled = true;
+    document.getElementById('result-wrap-grc').classList.remove('visible');
+    document.getElementById('challenge-wrap-grc').classList.remove('visible');
+    document.getElementById('challenge-final-grc').classList.remove('visible');
+    grcChallengeData = null;
+
+    startLoading('grc', [
+      'Evaluating against selected standard...',
+      'Checking objective evidence requirements...',
+      'Applying regulatory defensibility lens...',
+      'Assessing legal chain of custody...'
+    ]);
+
+    const systemPrompt = `You are a senior GRC auditor and attorney specializing in information security compliance. Evaluate whether submitted evidence would survive scrutiny from an external auditor or regulator.
+
+Evaluate with three simultaneous lenses:
+1. An ISO 27001 lead auditor verifying objective evidence of control effectiveness
+2. A regulator assessing whether the control meets the stated requirement
+3. A legal professional determining whether the evidence establishes a defensible chain of custody
+
+Respond ONLY with valid JSON — no markdown fences, no preamble:
+{
+  "verdict": "Effective" | "Partially Effective" | "Ineffective",
+  "score": <integer 0-100>,
+  "rationale": "<2-3 sentences explaining the evaluation>",
+  "gaps": [
+    { "severity": "critical" | "moderate" | "minor", "description": "<specific, actionable gap>" }
+  ],
+  "legal_defensibility": "<1-2 sentences on regulatory/legal defensibility>",
+  "references": ["<specific clause or standard reference>"]
+}
+
+Scoring: 85-100 = Effective. 50-84 = Partially Effective. 0-49 = Ineffective. Maximum 4 gaps.`;
+
+    const userPrompt = `Framework: ${framework}\nControl Category: ${category}\nControl Statement: ${control}\nEvidence Submitted: ${evidence}\n\nEvaluate this evidence.`;
+
+    try {
+      const raw = await callGroq(apiKey, systemPrompt, userPrompt);
+      const result = safeParseJSON(raw);
+      lastGRCResult = { framework, category, control, evidence, result };
+      grcHistory.unshift(lastGRCResult);
+      renderResultGRC(result);
+      renderHistoryGRC();
+    } catch (err) {
+      showError('grc', 'Evaluation failed: ' + err.message);
+    }
+
+    stopLoading('grc');
+    btn.disabled = false;
+  }
+
+  function renderResultGRC(r) {
+    const verdictClass = r.verdict === 'Effective' ? 'v-effective' : r.verdict === 'Partially Effective' ? 'v-partial' : 'v-ineffective';
+    document.getElementById('verdict-card-grc').className = 'verdict-card ' + verdictClass;
+    document.getElementById('verdict-badge-grc').textContent = r.verdict;
+    document.getElementById('verdict-label-grc').textContent =
+      r.verdict === 'Effective' ? 'Control evidence is audit-ready.' :
+      r.verdict === 'Partially Effective' ? 'Evidence partially supports the control.' :
+      'Evidence does not substantiate the control.';
+    document.getElementById('verdict-score-grc').textContent = r.score + '/100';
+    document.getElementById('result-rationale-grc').textContent = r.rationale;
+    document.getElementById('legal-box-grc').textContent = r.legal_defensibility;
+
+    const gapsList = document.getElementById('gaps-list-grc');
+    gapsList.innerHTML = '';
+    if (r.gaps && r.gaps.length) {
+      r.gaps.forEach(g => {
+        const li = document.createElement('li');
+        li.className = 'gap-item sev-' + g.severity;
+        li.innerHTML = `<span class="gap-sev">${g.severity}</span><span>${g.description}</span>`;
+        gapsList.appendChild(li);
+      });
+      document.getElementById('gaps-block-grc').style.display = 'block';
+    } else {
+      document.getElementById('gaps-block-grc').style.display = 'none';
+    }
+
+    const pills = document.getElementById('ref-pills-grc');
+    pills.innerHTML = '';
+    if (r.references && r.references.length) {
+      r.references.forEach(ref => {
+        const span = document.createElement('span');
+        span.className = 'ref-pill';
+        span.textContent = ref;
+        pills.appendChild(span);
+      });
+      document.getElementById('refs-block-grc').style.display = 'block';
+    } else {
+      document.getElementById('refs-block-grc').style.display = 'none';
+    }
+
+    document.getElementById('result-wrap-grc').classList.add('visible');
+    document.getElementById('result-wrap-grc').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ══════════════════════════════════════════
+  // AI GOVERNANCE MODE — EVALUATION
+  // ══════════════════════════════════════════
+  async function runEvalAI() {
+    const apiKey = document.getElementById('api-key').value.trim();
+    const systemType = document.getElementById('ai-system-type').value;
+    const govFramework = document.getElementById('ai-governance-framework').value;
+    const rmfComponent = document.getElementById('ai-rmf-component').value;
+    const riskLevel = document.getElementById('ai-risk-level').value;
+    const evidenceType = document.getElementById('ai-evidence-type').value;
+    const systemDesc = document.getElementById('ai-system-desc').value.trim();
+    const evidence = document.getElementById('ai-evidence-stmt').value.trim();
+
+    hideError('ai');
+    if (!apiKey) { showError('ai', 'Please enter your Groq API key.'); return; }
+    if (!systemDesc) { showError('ai', 'Please describe the AI system being evaluated.'); return; }
+    if (!evidence) { showError('ai', 'Please describe the governance evidence being submitted.'); return; }
+
+    const btn = document.getElementById('eval-btn-ai');
+    btn.disabled = true;
+    document.getElementById('result-wrap-ai').classList.remove('visible');
+    document.getElementById('challenge-wrap-ai').classList.remove('visible');
+    document.getElementById('challenge-final-ai').classList.remove('visible');
+    aiChallengeData = null;
+
+    startLoading('ai', [
+      'Evaluating AI governance evidence...',
+      'Applying NIST AI RMF framework lens...',
+      'Checking EU AI Act requirements...',
+      'Assessing responsible AI documentation...'
+    ]);
+
+    const isEUAct = govFramework.includes('EU AI Act');
+    const isNIST = govFramework.includes('NIST AI RMF');
+    const isHighRisk = riskLevel === 'High Risk - Annex III';
+    const isFullCycle = rmfComponent === 'Full Cycle';
+
+    const systemPrompt = `You are a senior AI governance auditor and attorney specializing in responsible AI compliance. You have deep expertise in:
+- NIST AI Risk Management Framework (AI RMF) — GOVERN, MAP, MEASURE, MANAGE
+- EU AI Act — particularly Annex III high-risk system requirements
+- Responsible AI principles: transparency, fairness, accountability, explainability
+- Financial services AI regulation (CFPB, ECOA, Fair Lending, model risk management)
+
+Your task is to evaluate whether the submitted governance evidence demonstrates that this AI system is being managed responsibly and in compliance with applicable frameworks.
+
+${isNIST ? `
+NIST AI RMF EVALUATION CRITERIA for ${rmfComponent}:
+- GOVERN: AI policy exists, roles/accountability defined, AI inventory maintained, use case approval process documented
+- MAP: Intake form completed with system description, data types, affected populations, decision impact assessment
+- MEASURE: Risk matrix completed, probability and impact rated, control effectiveness assessed, fairness testing documented
+- MANAGE: Risk treatment decisions documented with owners and deadlines, corrective actions tracked to closure, monitoring metrics defined
+` : ''}
+${isEUAct && isHighRisk ? `
+EU AI ACT ANNEX III REQUIREMENTS (High Risk):
+1. Technical documentation (Article 11) — must describe system purpose, design, training data, testing
+2. Logging & audit trail (Article 12) — automatic logging of operations for traceability
+3. Transparency to deployers (Article 13) — instructions for use, capabilities, limitations
+4. Human oversight measures (Article 14) — humans can oversee, intervene, and override
+5. Accuracy, robustness, cybersecurity (Article 15) — performance metrics, error rates, bias testing
+6. EU database registration (Article 51) — before deployment of high-risk systems
+7. Conformity assessment (Article 43) — self-assessment or third-party depending on category
+` : ''}
+${isEUAct && riskLevel === 'Limited Risk' ? `
+EU AI ACT LIMITED RISK REQUIREMENTS:
+- Transparency obligations: users must be informed they are interacting with an AI system
+- Chatbots and emotion recognition systems must disclose AI nature
+` : ''}
+
+Respond ONLY with valid JSON — no markdown, no preamble:
+{
+  "verdict": "Effective" | "Partially Effective" | "Ineffective",
+  "score": <integer 0-100>,
+  "rationale": "<2-3 sentences assessing overall governance maturity for this AI system>",
+  ${isNIST && isFullCycle ? `"component_scores": { "govern": <0-100>, "map": <0-100>, "measure": <0-100>, "manage": <0-100> },` : ''}
+  "gaps": [
+    { "severity": "critical" | "moderate" | "minor", "description": "<specific AI governance gap — cite framework clause where applicable>" }
+  ],
+  ${isEUAct && isHighRisk ? `"eu_requirements": [
+    { "requirement": "<Article/requirement name>", "status": "met" | "partial" | "missing", "note": "<brief assessment>" }
+  ],` : ''}
+  "legal_defensibility": "<1-2 sentences on whether this governance evidence would satisfy a regulator, the EU AI Act supervisory authority, or withstand legal scrutiny>",
+  "references": ["<NIST AI RMF reference or EU AI Act Article>"]
+}
+
+Scoring: 85-100 = Effective. 50-84 = Partially Effective. 0-49 = Ineffective.
+Be rigorous. Absence of fairness testing for systems affecting financial decisions, lack of human oversight documentation, undocumented use case approval, and missing intake documentation are critical weaknesses. Maximum 5 gaps.`;
+
+    const userPrompt = `AI System Type: ${systemType}
+Governance Framework: ${govFramework}
+NIST AI RMF Component: ${rmfComponent}
+EU AI Act Risk Level: ${riskLevel}
+Evidence Type: ${evidenceType}
+
+AI System Description: ${systemDesc}
+
+Governance Evidence Submitted: ${evidence}
+
+Evaluate this AI governance evidence.`;
+
+    try {
+      const raw = await callGroq(apiKey, systemPrompt, userPrompt, 2500);
+      const result = safeParseJSON(raw);
+      lastAIResult = { systemType, govFramework, rmfComponent, riskLevel, evidenceType, systemDesc, evidence, result };
+      aiHistory.unshift(lastAIResult);
+      renderResultAI(result, isNIST && isFullCycle, isEUAct && isHighRisk);
+      renderHistoryAI();
+    } catch (err) {
+      showError('ai', 'Evaluation failed: ' + err.message);
+    }
+
+    stopLoading('ai');
+    btn.disabled = false;
+  }
+
+  function renderResultAI(r, showComponents, showEU) {
+    const verdictClass = r.verdict === 'Effective' ? 'v-effective' : r.verdict === 'Partially Effective' ? 'v-partial' : 'v-ineffective';
+    document.getElementById('verdict-card-ai').className = 'verdict-card ai-card ' + verdictClass;
+    document.getElementById('verdict-badge-ai').textContent = r.verdict;
+    document.getElementById('verdict-label-ai').textContent =
+      r.verdict === 'Effective' ? 'AI governance evidence is audit-ready.' :
+      r.verdict === 'Partially Effective' ? 'Governance evidence partially demonstrates compliance.' :
+      'Governance evidence does not demonstrate adequate AI oversight.';
+    document.getElementById('verdict-score-ai').textContent = r.score + '/100';
+    document.getElementById('result-rationale-ai').textContent = r.rationale;
+    document.getElementById('legal-box-ai').textContent = r.legal_defensibility;
+
+    // Component scores
+    if (showComponents && r.component_scores) {
+      const cs = r.component_scores;
+      document.getElementById('component-scores').innerHTML = `
+        <div class="component-score-item govern">
+          <div class="component-score-label">GOVERN</div>
+          <div class="component-score-value">${cs.govern}/100</div>
+        </div>
+        <div class="component-score-item map">
+          <div class="component-score-label">MAP</div>
+          <div class="component-score-value">${cs.map}/100</div>
+        </div>
+        <div class="component-score-item measure">
+          <div class="component-score-label">MEASURE</div>
+          <div class="component-score-value">${cs.measure}/100</div>
+        </div>
+        <div class="component-score-item manage">
+          <div class="component-score-label">MANAGE</div>
+          <div class="component-score-value">${cs.manage}/100</div>
+        </div>`;
+      document.getElementById('component-scores-block').style.display = 'block';
+    } else {
+      document.getElementById('component-scores-block').style.display = 'none';
+    }
+
+    // Gaps
+    const gapsList = document.getElementById('gaps-list-ai');
+    gapsList.innerHTML = '';
+    if (r.gaps && r.gaps.length) {
+      r.gaps.forEach(g => {
+        const li = document.createElement('li');
+        li.className = 'gap-item sev-' + g.severity;
+        li.innerHTML = `<span class="gap-sev">${g.severity}</span><span>${g.description}</span>`;
+        gapsList.appendChild(li);
+      });
+      document.getElementById('gaps-block-ai').style.display = 'block';
+    } else {
+      document.getElementById('gaps-block-ai').style.display = 'none';
+    }
+
+    // EU AI Act requirements
+    if (showEU && r.eu_requirements && r.eu_requirements.length) {
+      const body = document.getElementById('eu-compliance-body');
+      body.innerHTML = '';
+      r.eu_requirements.forEach(req => {
+        const div = document.createElement('div');
+        div.className = 'eu-requirement';
+        div.innerHTML = `<span class="eu-req-status ${req.status}">${req.status}</span><span><strong>${req.requirement}</strong> — ${req.note}</span>`;
+        body.appendChild(div);
+      });
+      document.getElementById('eu-compliance-block').style.display = 'block';
+    } else {
+      document.getElementById('eu-compliance-block').style.display = 'none';
+    }
+
+    // References
+    const pills = document.getElementById('ref-pills-ai');
+    pills.innerHTML = '';
+    if (r.references && r.references.length) {
+      r.references.forEach(ref => {
+        const span = document.createElement('span');
+        span.className = 'ref-pill ai-pill';
+        span.textContent = ref;
+        pills.appendChild(span);
+      });
+      document.getElementById('refs-block-ai').style.display = 'block';
+    } else {
+      document.getElementById('refs-block-ai').style.display = 'none';
+    }
+
+    document.getElementById('result-wrap-ai').classList.add('visible');
+    document.getElementById('result-wrap-ai').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ══════════════════════════════════════════
+  // GRC CHALLENGE
+  // ══════════════════════════════════════════
+  async function startChallengeGRC() {
+    if (!lastGRCResult) return;
+    const apiKey = document.getElementById('api-key').value.trim();
+    if (!apiKey) { showError('grc', 'API key required.'); return; }
+
+    const btn = document.getElementById('challenge-btn-grc');
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    document.getElementById('challenge-wrap-grc').classList.remove('visible');
+    document.getElementById('challenge-final-grc').classList.remove('visible');
+    grcChallengeData = null;
+
+    startLoading('grc', ['Generating auditor questions...', 'Applying framework scrutiny...', 'Preparing the challenge...']);
+
+    const { framework, category, control, evidence, result } = lastGRCResult;
+
+    const sysPrompt = `You are a senior external auditor under ${framework}. Generate exactly 4 challenging questions for an audit walkthrough based on the control and evidence provided.
+
+Respond ONLY with valid JSON:
+{
+  "questions": [
+    { "text": "<direct question>", "focus": "<Coverage|Timeliness|Ownership|Process Integrity|Technical Verification|Exception Handling|Policy Alignment>", "why_asked": "<1 sentence on what weakness this probes>" }
+  ]
+}`;
+
+    const userPrompt = `Framework: ${framework}\nCategory: ${category}\nControl: ${control}\nEvidence: ${evidence}\nVerdict: ${result.verdict} (${result.score}/100)\nGaps: ${(result.gaps||[]).map(g=>g.description).join('; ')}\n\nGenerate challenge questions.`;
+
+    try {
+      const raw = await callGroq(apiKey, sysPrompt, userPrompt);
+      const parsed = safeParseJSON(raw);
+      grcChallengeData = { questions: parsed.questions, answers: new Array(parsed.questions.length).fill(''), evaluations: null, finalVerdict: null };
+      renderChallengeQuestions('grc', grcChallengeData.questions);
+    } catch (err) {
+      showError('grc', 'Challenge generation failed: ' + err.message);
+      btn.disabled = false;
+      btn.textContent = '▶ Run Auditor Challenge';
+    }
+
+    stopLoading('grc');
+  }
+
+  // ══════════════════════════════════════════
+  // AI GOVERNANCE CHALLENGE
+  // ══════════════════════════════════════════
+  async function startChallengeAI() {
+    if (!lastAIResult) return;
+    const apiKey = document.getElementById('api-key').value.trim();
+    if (!apiKey) { showError('ai', 'API key required.'); return; }
+
+    const btn = document.getElementById('challenge-btn-ai');
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    document.getElementById('challenge-wrap-ai').classList.remove('visible');
+    document.getElementById('challenge-final-ai').classList.remove('visible');
+    aiChallengeData = null;
+
+    startLoading('ai', ['Generating AI governance questions...', 'Applying regulator lens...', 'Preparing EU AI Act challenge...', 'Calibrating NIST AI RMF scrutiny...']);
+
+    const { systemType, govFramework, rmfComponent, riskLevel, evidenceType, systemDesc, evidence, result } = lastAIResult;
+
+    const sysPrompt = `You are a senior AI governance regulator and auditor with expertise in NIST AI RMF and EU AI Act. The organization submitted governance evidence for an AI system. Generate exactly 4 challenging questions that a regulator or EU AI Act supervisory authority would ask during a formal review.
+
+Questions must target:
+- Specific weaknesses in the governance evidence submitted
+- NIST AI RMF component gaps (GOVERN, MAP, MEASURE, MANAGE)
+- EU AI Act requirements if applicable (high-risk systems)
+- Responsible AI principles: fairness, explainability, human oversight, accountability
+- Financial services specific concerns: model bias, explainability for customer decisions, audit trails
+
+Focus areas: evidence completeness, documented decision accountability, fairness/bias testing existence, human oversight mechanisms, update/drift monitoring, use case approval trail.
+
+Respond ONLY with valid JSON:
+{
+  "questions": [
+    { "text": "<direct regulator question>", "focus": "<GOVERN|MAP|MEASURE|MANAGE|EU AI Act|Fairness|Human Oversight|Accountability|Explainability>", "why_asked": "<1 sentence on what governance gap this probes>" }
+  ]
+}`;
+
+    const userPrompt = `AI System Type: ${systemType}
+Governance Framework: ${govFramework}
+NIST AI RMF Component: ${rmfComponent}
+EU AI Act Risk Level: ${riskLevel}
+AI System: ${systemDesc}
+Evidence: ${evidence}
+Verdict: ${result.verdict} (${result.score}/100)
+Gaps: ${(result.gaps||[]).map(g=>g.description).join('; ')}
+
+Generate AI governance challenge questions.`;
+
+    try {
+      const raw = await callGroq(apiKey, sysPrompt, userPrompt);
+      const parsed = safeParseJSON(raw);
+      aiChallengeData = { questions: parsed.questions, answers: new Array(parsed.questions.length).fill(''), evaluations: null, finalVerdict: null };
+      renderChallengeQuestions('ai', aiChallengeData.questions);
+    } catch (err) {
+      showError('ai', 'Challenge generation failed: ' + err.message);
+      btn.disabled = false;
+      btn.textContent = '▶ Run AI Auditor Challenge';
+    }
+
+    stopLoading('ai');
+  }
+
+  // ══════════════════════════════════════════
+  // SHARED CHALLENGE RENDERING
+  // ══════════════════════════════════════════
+  function renderChallengeQuestions(mode, questions) {
+    const container = document.getElementById('challenge-questions-' + mode);
+    container.innerHTML = '';
+
+    questions.forEach((q, i) => {
+      const div = document.createElement('div');
+      div.className = 'challenge-q';
+      div.id = 'cq-' + mode + '-' + i;
+      div.innerHTML = `
+        <div class="challenge-q-header">
+          <span class="challenge-q-num">Q${i+1}</span>
+          <span class="challenge-q-focus">${q.focus}</span>
+        </div>
+        <div class="challenge-q-text">${q.text}</div>
+        <div class="challenge-q-context">${q.why_asked}</div>
+        <textarea class="challenge-answer" id="ca-${mode}-${i}" rows="3"
+          placeholder="Type your response as you would in an actual audit walkthrough..."
+          oninput="onAnswerInput('${mode}', ${i}, this)"></textarea>
+        <div class="challenge-q-eval" id="ce-${mode}-${i}"></div>`;
+      container.appendChild(div);
+    });
+
+    const submitRow = document.createElement('div');
+    submitRow.className = 'challenge-submit-row';
+    submitRow.id = 'challenge-submit-row-' + mode;
+    submitRow.innerHTML = `
+      <span class="challenge-count" id="challenge-count-${mode}">0 of ${questions.length} answered</span>
+      <button class="eval-btn${mode==='ai'?' ai-btn':''}" id="challenge-submit-btn-${mode}" onclick="submitChallenge('${mode}')" disabled>Submit to Auditor</button>`;
+    container.appendChild(submitRow);
+
+    document.getElementById('challenge-progress-' + mode).textContent = `${questions.length} Questions`;
+    document.getElementById('challenge-wrap-' + mode).classList.add('visible');
+    document.getElementById('challenge-wrap-' + mode).scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const challengeBtn = document.getElementById('challenge-btn-' + mode);
+    challengeBtn.disabled = false;
+    challengeBtn.textContent = mode === 'ai' ? '▶ Run AI Auditor Challenge' : '▶ Run Auditor Challenge';
+  }
+
+  function onAnswerInput(mode, idx, el) {
+    const data = mode === 'grc' ? grcChallengeData : aiChallengeData;
+    data.answers[idx] = el.value.trim();
+    el.classList.toggle('answered', el.value.trim().length > 0);
+    const answered = data.answers.filter(a => a.length > 0).length;
+    document.getElementById('challenge-count-' + mode).textContent = `${answered} of ${data.questions.length} answered`;
+    document.getElementById('challenge-submit-btn-' + mode).disabled = (answered < data.questions.length);
+  }
+
+  async function submitChallenge(mode) {
+    const apiKey = document.getElementById('api-key').value.trim();
+    if (!apiKey) return;
+
+    const data = mode === 'grc' ? grcChallengeData : aiChallengeData;
+    const lastResult = mode === 'grc' ? lastGRCResult : lastAIResult;
+
+    const submitBtn = document.getElementById('challenge-submit-btn-' + mode);
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Evaluating...';
+
+    startLoading(mode, ['Reviewing your responses...', 'Applying auditor judgment...', 'Calculating challenge score...', 'Finalizing result...']);
+
+    const isAIMode = mode === 'ai';
+    const contextLabel = isAIMode
+      ? `AI System: ${lastResult.systemDesc}\nGovernance Framework: ${lastResult.govFramework}\nRisk Level: ${lastResult.riskLevel}`
+      : `Framework: ${lastResult.framework}\nControl: ${lastResult.control}`;
+
+    const sysPrompt = `You are a senior ${isAIMode ? 'AI governance regulator' : 'external auditor'} who completed a walkthrough. Evaluate each answer and provide a final verdict.
+
+For each answer assess: directness, specific verifiable detail, regulatory acceptability, consistency with submitted evidence.
+
+Respond ONLY with valid JSON:
+{
+  "question_evaluations": [
+    { "strength": "strong" | "adequate" | "weak", "feedback": "<1-2 sentences — specific, direct auditor voice>" }
+  ],
+  "final_verdict": "Audit-Ready" | "Needs Remediation" | "Audit Failure",
+  "challenge_score": <integer 0-100>,
+  "summary": "<2-3 sentences: would this organization pass a formal ${isAIMode ? 'AI governance' : 'compliance'} audit on this ${isAIMode ? 'AI system' : 'control'}?>",
+  "recommendation": "<1-2 sentences: the single most important thing to fix before a real audit>"
+}`;
+
+    const qa = data.questions.map((q, i) => `Q${i+1} [${q.focus}]: ${q.text}\nA${i+1}: ${data.answers[i]}`).join('\n\n');
+    const userPrompt = `${contextLabel}\nInitial Verdict: ${lastResult.result.verdict} (${lastResult.result.score}/100)\n\nQ&A:\n${qa}\n\nEvaluate responses.`;
+
+    try {
+      const raw = await callGroq(apiKey, sysPrompt, userPrompt);
+      const evalResult = safeParseJSON(raw);
+      data.evaluations = evalResult.question_evaluations;
+      data.finalVerdict = evalResult;
+      renderChallengeEvaluations(mode, evalResult);
+    } catch (err) {
+      showError(mode, 'Challenge evaluation failed: ' + err.message);
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit to Auditor';
+    }
+
+    stopLoading(mode);
+  }
+
+  function renderChallengeEvaluations(mode, evalResult) {
+    const data = mode === 'grc' ? grcChallengeData : aiChallengeData;
+    const tagMap = { strong: 'Strong ✓', adequate: 'Adequate ▲', weak: 'Weak ✗' };
+
+    data.evaluations.forEach((ev, i) => {
+      const el = document.getElementById('ce-' + mode + '-' + i);
+      el.className = 'challenge-q-eval visible ' + ev.strength;
+      el.innerHTML = `<span class="eval-tag">${tagMap[ev.strength]}</span>${ev.feedback}`;
+      document.getElementById('cq-' + mode + '-' + i).classList.add('evaluated');
+    });
+
+    const row = document.getElementById('challenge-submit-row-' + mode);
+    if (row) row.style.display = 'none';
+
+    const cls = evalResult.final_verdict === 'Audit-Ready' ? 'audit-ready'
+              : evalResult.final_verdict === 'Needs Remediation' ? 'needs-remediation' : 'audit-fail';
+    document.getElementById('challenge-final-head-' + mode).className = 'challenge-final-head ' + cls;
+    document.getElementById('challenge-final-verdict-' + mode).textContent = evalResult.final_verdict;
+    document.getElementById('challenge-final-score-' + mode).textContent = evalResult.challenge_score + '/100';
+    document.getElementById('challenge-final-summary-' + mode).textContent = evalResult.summary;
+    document.getElementById('challenge-final-rec-' + mode).textContent = evalResult.recommendation;
+
+    document.getElementById('challenge-final-' + mode).classList.add('visible');
+    document.getElementById('challenge-final-' + mode).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ══════════════════════════════════════════
+  // HISTORY
+  // ══════════════════════════════════════════
+  function renderHistoryGRC() {
+    if (grcHistory.length < 2) return;
+    const section = document.getElementById('history-section-grc');
+    const list = document.getElementById('history-list-grc');
+    list.innerHTML = '';
+    grcHistory.slice(1).forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'history-item';
+      const cls = item.result.verdict === 'Effective' ? 'background:#e8f5ee;color:#0f4c35'
+                : item.result.verdict === 'Partially Effective' ? 'background:#fdf3e0;color:#7a4a00'
+                : 'background:#faeaea;color:#6b1919';
+      div.innerHTML = `<span class="history-control-text">${item.control}</span><span class="history-verdict-badge" style="${cls};padding:3px 8px;border-radius:2px;font-family:DM Mono,monospace;font-size:9px;text-transform:uppercase">${item.result.verdict} · ${item.result.score}/100</span>`;
+      div.onclick = () => renderResultGRC(item.result);
+      list.appendChild(div);
+    });
+    section.classList.add('visible');
+  }
+
+  function renderHistoryAI() {
+    if (aiHistory.length < 2) return;
+    const section = document.getElementById('history-section-ai');
+    const list = document.getElementById('history-list-ai');
+    list.innerHTML = '';
+    aiHistory.slice(1).forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'history-item';
+      const cls = item.result.verdict === 'Effective' ? 'background:#e8f5ee;color:#0f4c35'
+                : item.result.verdict === 'Partially Effective' ? 'background:#fdf3e0;color:#7a4a00'
+                : 'background:#faeaea;color:#6b1919';
+      div.innerHTML = `<span class="history-control-text">${item.systemDesc}</span><span class="history-verdict-badge" style="${cls};padding:3px 8px;border-radius:2px;font-family:DM Mono,monospace;font-size:9px;text-transform:uppercase">${item.result.verdict} · ${item.result.score}/100</span>`;
+      div.onclick = () => {
+        const isFullCycle = item.rmfComponent === 'Full Cycle';
+        const isEUHigh = item.govFramework.includes('EU AI Act') && item.riskLevel === 'High Risk - Annex III';
+        renderResultAI(item.result, isFullCycle, isEUHigh);
+      };
+      list.appendChild(div);
+    });
+    section.classList.add('visible');
+  }
+
+  // ══════════════════════════════════════════
+  // COPY / EXPORT
+  // ══════════════════════════════════════════
+  function copyReportGRC() {
+    if (!lastGRCResult) return;
+    const r = lastGRCResult.result;
+    const gaps = (r.gaps||[]).map(g=>`  [${g.severity.toUpperCase()}] ${g.description}`).join('\n');
+    const text = buildBaseReportGRC(lastGRCResult, r, gaps, (r.references||[]).join(', '));
+    copyToClipboard(text);
+  }
+
+  function copyFullReportGRC() {
+    if (!lastGRCResult || !grcChallengeData?.finalVerdict) return;
+    const r = lastGRCResult.result;
+    const ev = grcChallengeData.finalVerdict;
+    const gaps = (r.gaps||[]).map(g=>`  [${g.severity.toUpperCase()}] ${g.description}`).join('\n');
+    const qa = grcChallengeData.questions.map((q,i) => {
+      const evq = grcChallengeData.evaluations[i];
+      return `  Q${i+1} [${q.focus}]: ${q.text}\n  A: ${grcChallengeData.answers[i]}\n  Auditor: [${evq.strength.toUpperCase()}] ${evq.feedback}`;
+    }).join('\n\n');
+    const text = buildBaseReportGRC(lastGRCResult, r, gaps, (r.references||[]).join(', ')) +
+      `\n\n═══════════════════════════════════\nAUDITOR CHALLENGE RESULTS\n═══════════════════════════════════\nChallenge Verdict: ${ev.final_verdict}\nChallenge Score: ${ev.challenge_score}/100\n\nQ&A WITH FEEDBACK\n-----------------\n${qa}\n\nFINAL RECOMMENDATION\n--------------------\n${ev.recommendation}`;
+    copyToClipboard(text);
+  }
+
+  function buildBaseReportGRC(ctx, r, gaps, refs) {
+    return `GRC AI EVIDENCE EVALUATOR — AUDIT REPORT
+==========================================
+Framework:   ${ctx.framework}
+Category:    ${ctx.category}
+Generated:   ${new Date().toISOString().slice(0,10)}
+
+CONTROL STATEMENT
+-----------------
+${ctx.control}
+
+EVIDENCE SUBMITTED
+------------------
+${ctx.evidence}
+
+VERDICT:  ${r.verdict}
+SCORE:    ${r.score}/100
+
+AUDIT RATIONALE
+---------------
+${r.rationale}
+
+IDENTIFIED GAPS
+---------------
+${gaps || 'None identified.'}
+
+LEGAL DEFENSIBILITY
+-------------------
+${r.legal_defensibility}
+
+APPLICABLE REFERENCES
+---------------------
+${refs || 'N/A'}
+
+--
+Carlos J. Molina · GRC & Compliance Consultant · ISO 27001 Lead Auditor · Attorney`;
+  }
+
+  function copyReportAI() {
+    if (!lastAIResult) return;
+    const r = lastAIResult.result;
+    const gaps = (r.gaps||[]).map(g=>`  [${g.severity.toUpperCase()}] ${g.description}`).join('\n');
+    const euSection = r.eu_requirements ? '\n\nEU AI ACT REQUIREMENTS\n----------------------\n' +
+      r.eu_requirements.map(req=>`  [${req.status.toUpperCase()}] ${req.requirement}: ${req.note}`).join('\n') : '';
+    const text = `GRC AI EVIDENCE EVALUATOR — AI GOVERNANCE REPORT
+================================================
+AI System Type:    ${lastAIResult.systemType}
+Governance:        ${lastAIResult.govFramework}
+RMF Component:     ${lastAIResult.rmfComponent}
+EU AI Act Level:   ${lastAIResult.riskLevel}
+Generated:         ${new Date().toISOString().slice(0,10)}
+
+AI SYSTEM DESCRIPTION
+---------------------
+${lastAIResult.systemDesc}
+
+GOVERNANCE EVIDENCE SUBMITTED
+------------------------------
+${lastAIResult.evidence}
+
+VERDICT:  ${r.verdict}
+SCORE:    ${r.score}/100
+
+GOVERNANCE ASSESSMENT
+---------------------
+${r.rationale}
+
+GOVERNANCE GAPS
+---------------
+${gaps || 'None identified.'}${euSection}
+
+REGULATORY DEFENSIBILITY
+------------------------
+${r.legal_defensibility}
+
+REFERENCES
+----------
+${(r.references||[]).join(', ') || 'N/A'}
+
+--
+Carlos J. Molina · GRC & Compliance Consultant · ISO 27001 Lead Auditor · Attorney`;
+    copyToClipboard(text);
+  }
+
+  function copyFullReportAI() {
+    if (!lastAIResult || !aiChallengeData?.finalVerdict) return;
+    const ev = aiChallengeData.finalVerdict;
+    const qa = aiChallengeData.questions.map((q,i) => {
+      const evq = aiChallengeData.evaluations[i];
+      return `  Q${i+1} [${q.focus}]: ${q.text}\n  A: ${aiChallengeData.answers[i]}\n  Regulator: [${evq.strength.toUpperCase()}] ${evq.feedback}`;
+    }).join('\n\n');
+    copyReportAI();
+    // Append challenge data
+    navigator.clipboard.readText().then(existing => {
+      copyToClipboard(existing + `\n\n═══════════════════════════════════\nAI GOVERNANCE CHALLENGE RESULTS\n═══════════════════════════════════\nChallenge Verdict: ${ev.final_verdict}\nChallenge Score: ${ev.challenge_score}/100\n\nQ&A WITH REGULATOR FEEDBACK\n---------------------------\n${qa}\n\nFINAL RECOMMENDATION\n--------------------\n${ev.recommendation}`);
+    });
+  }
+
+  function copyExecSummaryGRC() {
+    if (!lastGRCResult) return;
+    const r = lastGRCResult.result;
+    const today = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    const riskLevel = r.score >= 85 ? 'LOW — Control is operating effectively.'
+                    : r.score >= 65 ? 'MODERATE — Control requires attention.'
+                    : r.score >= 50 ? 'ELEVATED — Control has significant gaps.'
+                    : 'HIGH — Control is not operating effectively.';
+    const gaps = (r.gaps||[]).filter(g=>g.severity!=='minor').slice(0,3).map(g=>`  • [${g.severity.toUpperCase()}] ${g.description}`).join('\n') || '  • No critical or moderate issues identified.';
+    const text = `COMPLIANCE EXECUTIVE SUMMARY\n════════════════════════════════════\n${lastGRCResult.framework} · ${lastGRCResult.category}\n${today}\n\nCONTROL ASSESSED\n----------------\n${lastGRCResult.control}\n\nRESULT:  ${r.verdict.toUpperCase()}\nRISK LEVEL:  ${riskLevel}\nSCORE:  ${r.score}/100\n\nWHAT THIS MEANS\n---------------\n${r.rationale}\n\nKEY ISSUES\n----------\n${gaps}\n\nLEGAL EXPOSURE\n--------------\n${r.legal_defensibility}\n\n────────────────────────────────────\nPrepared by: Carlos J. Molina\nGRC & Compliance Consultant · ISO 27001 Lead Auditor · Attorney`;
+    copyToClipboard(text, document.getElementById('exec-summary-btn-grc'));
+  }
+
+  function copyToClipboard(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      if (!btn) return;
+      const orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = orig, 1800);
+    });
+  }
+
+  // ══════════════════════════════════════════
+  // CLEAR
+  // ══════════════════════════════════════════
+  function clearAllGRC() {
+    document.getElementById('control-stmt').value = '';
+    document.getElementById('evidence-stmt').value = '';
+    document.getElementById('control-chars').textContent = '0 / 600';
+    document.getElementById('evidence-chars').textContent = '0 / 1200';
+    document.getElementById('result-wrap-grc').classList.remove('visible');
+    document.getElementById('challenge-wrap-grc').classList.remove('visible');
+    hideError('grc');
+    lastGRCResult = null;
+    grcChallengeData = null;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function clearAllAI() {
+    document.getElementById('ai-system-desc').value = '';
+    document.getElementById('ai-evidence-stmt').value = '';
+    document.getElementById('ai-system-chars').textContent = '0 / 600';
+    document.getElementById('ai-evidence-chars').textContent = '0 / 1200';
+    document.getElementById('result-wrap-ai').classList.remove('visible');
+    document.getElementById('challenge-wrap-ai').classList.remove('visible');
+    hideError('ai');
+    lastAIResult = null;
+    aiChallengeData = null;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
