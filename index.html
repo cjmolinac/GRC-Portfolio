@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -684,7 +683,7 @@
 
     <div class="stats-bar">
         <div class="stats-inner">
-            <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">Case Studies</div></div>
+            <div class="stat-item"><div class="stat-num">4</div><div class="stat-lbl">Case Studies</div></div>
             <div class="stat-item"><div class="stat-num">9</div><div class="stat-lbl">Frameworks</div></div>
             <div class="stat-item"><div class="stat-num">6</div><div class="stat-lbl">Tools Deployed</div></div>
             <div class="stat-item"><div class="stat-num">1</div><div class="stat-lbl">In Development</div></div>
@@ -820,6 +819,47 @@
                             <div class="rationale-item"><div class="rationale-label">Challenges</div><div class="rationale-text">Balancing control effectiveness ratings in a data-sensitive environment required applying business context beyond technical compliance checkboxes. Production access controls and antimalware management presented the most complex assessments — both controls existed formally but evidence demonstrated gaps that justified Ineffective ratings given the data at stake.</div></div>
                             <div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">Delivered a complete SOC 2 Type II control documentation package across all 12 Trust Services Criteria controls, identifying 2 critical control failures and 5 partially effective controls — enabling the organization to prioritize remediation efforts before the audit observation period.</div></div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 4 -->
+            <div class="project-card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Custody Corp</div>
+                        <div class="card-subtitle">ISO 27001 Initial Risk Assessment — Physical Security Services Provider</div>
+                    </div>
+                    <div class="card-badges">
+                        <span class="badge badge-navy">ISO 27001</span>
+                        <span class="badge badge-dev">In Progress</span>
+                    </div>
+                </div>
+                <div class="metrics-row">
+                    <div class="metric"><div class="metric-val">11</div><div class="metric-lbl">Assets</div></div>
+                    <div class="metric"><div class="metric-val">2</div><div class="metric-lbl">Risk Scenarios</div></div>
+                    <div class="metric"><div class="metric-val">3</div><div class="metric-lbl">Applied Controls</div></div>
+                    <div class="metric"><div class="metric-val">4/6</div><div class="metric-lbl">Deliverables</div></div>
+                </div>
+                <div class="card-body">
+                    <div class="findings-title">Key Accomplishments</div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Built a complete 11-asset inventory for a fictional physical security services company, distinguishing Primary (information) from Supporting (infrastructure/application) assets across payroll and administrative systems</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Completed two full risk scenarios — payroll fraud via insider access, and system unavailability at a critical payment date — each with documented probability/impact reasoning, existing and extra controls, and residual risk calculation</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Identified an organization-specific risk amplifier — operational personnel deployed at client premises rather than company offices — that couples internal system reliability to client-facing operational integrity, a detail no generic framework surfaces on its own</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Authored a complete Information Security Scoping Questionnaire — ten sections restructured into five parts (Context, Governance, Risk Posture, Technical Reality, Assessment Scope) — plus a Risk Tolerance Statement formally attributed to executive leadership and a certification roadmap with audit-day estimates verified against IAF/ISO 27006 guidance</div></div>
+                    <div class="rationale">
+                        <div class="rationale-head"><i class="bi bi-lightbulb-fill"></i> Decision Rationale</div>
+                        <div class="rationale-body">
+                            <div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">Custody Corp is a fictional physical security services provider with ~200 operational guards deployed at client sites and 14 administrative staff. The engagement began with a structured scoping exercise — adapted from an industry SOC 2 scoping template into an ISO 27001-native format — before any asset or control was defined in the assessment tooling.</div></div>
+                            <div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">Assets were modeled in three tiers (data, application, infrastructure) rather than two, specifically because the organization's own payroll software is internally developed — a distinct risk surface from the underlying server. Risk tolerance was set to Low for confidentiality/integrity of personnel data, reflecting real legal exposure from wage garnishment orders and disciplinary records, not a generic policy default.</div></div>
+                            <div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">A scoping methodology and risk assessment approach that traces every rating back to a stated business reason — reusable as a template for future engagements, and already shared with the GRC Engineering Club community with attribution to the original SOC 2 Engineering Kit.</div></div>
+                        </div>
+                    </div>
+                    <div class="tool-links">
+                        <a class="tool-link" href="case-studies/custody-corp/Scoping_Questionnaire_Template.docx" target="_blank"><i class="bi bi-file-earmark-text"></i> Scoping Questionnaire (Blank Template)</a>
+                        <a class="tool-link" href="case-studies/custody-corp/Custody_Corp_Scoping_Questionnaire.docx" target="_blank"><i class="bi bi-file-earmark-check"></i> Completed Exercise</a>
+                        <a class="tool-link" href="case-studies/custody-corp/Custody_Corp_ISO27001_Roadmap.pdf" target="_blank"><i class="bi bi-map"></i> Certification Roadmap</a>
+                        <a class="tool-link" href="case-studies/custody-corp/Custody_Corp_Risk_Tolerance_Statement.docx" target="_blank"><i class="bi bi-file-earmark-lock"></i> Risk Tolerance Statement</a>
                     </div>
                 </div>
             </div>
@@ -1104,7 +1144,7 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
-            <div class="footer-name">Carlos J. Molina — GRC Professional &amp; ISO 27001 Lead Auditor &nbsp;·&nbsp; Updated Aug 2026</div>
+            <div class="footer-name">Carlos J. Molina — GRC Professional &amp; ISO 27001 Lead Auditor &nbsp;·&nbsp; Updated Sep 2026</div>
             <div class="footer-pipeline">Deployed automatically via GitHub Actions → AWS S3 + CloudFront</div>
         </div>
     </footer>
