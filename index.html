@@ -828,7 +828,7 @@
                 <div class="card-header">
                     <div>
                         <div class="card-title">Custody Corp</div>
-                        <div class="card-subtitle">ISO 27001 Initial Risk Assessment — Physical Security Services Provider</div>
+                        <div class="card-subtitle">ISO 27001 Risk Assessment &amp; Statement of Applicability — Physical Security Services Provider</div>
                     </div>
                     <div class="card-badges">
                         <span class="badge badge-navy">ISO 27001</span>
@@ -836,23 +836,24 @@
                     </div>
                 </div>
                 <div class="metrics-row">
-                    <div class="metric"><div class="metric-val">11</div><div class="metric-lbl">Assets</div></div>
-                    <div class="metric"><div class="metric-val">2</div><div class="metric-lbl">Risk Scenarios</div></div>
+                    <div class="metric"><div class="metric-val">14</div><div class="metric-lbl">Assets</div></div>
+                    <div class="metric"><div class="metric-val">93/93</div><div class="metric-lbl">Annex A Reviewed</div></div>
                     <div class="metric"><div class="metric-val">3</div><div class="metric-lbl">Applied Controls</div></div>
-                    <div class="metric"><div class="metric-val">4/6</div><div class="metric-lbl">Deliverables</div></div>
+                    <div class="metric"><div class="metric-val">6</div><div class="metric-lbl">Deliverables</div></div>
                 </div>
                 <div class="card-body">
                     <div class="findings-title">Key Accomplishments</div>
-                    <div class="finding-item"><div class="finding-dot"></div><div>Built a complete 11-asset inventory for a fictional physical security services company, distinguishing Primary (information) from Supporting (infrastructure/application) assets across payroll and administrative systems</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Built a complete 14-asset inventory for a fictional physical security services company, distinguishing Primary (information) from Supporting (infrastructure/application) assets across payroll and administrative systems — including a shared cold standby server and dual backup storage identified as undisclosed infrastructure during the Map phase</div></div>
                     <div class="finding-item"><div class="finding-dot"></div><div>Completed two full risk scenarios — payroll fraud via insider access, and system unavailability at a critical payment date — each with documented probability/impact reasoning, existing and extra controls, and residual risk calculation</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Authored a complete System Description (9-section document, adapted from SOC 2 System Description conventions to ISO 27001-native language) covering nature of services, principal commitments, system components, incidents, applicable criteria, third-party dependencies, and scope exclusions — each traced to a specific business reason, not a template default</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div>Completed a full Statement of Applicability across all 93 ISO/IEC 27001:2022 Annex A controls, with an individual applicability call, justification, and implementation status for every control — surfacing organization-specific gaps including unencrypted data at rest, ungoverned privileged database accounts, and a declared-vs-actual RPO gap in both the payroll and administrative backup routines</div></div>
                     <div class="finding-item"><div class="finding-dot"></div><div>Identified an organization-specific risk amplifier — operational personnel deployed at client premises rather than company offices — that couples internal system reliability to client-facing operational integrity, a detail no generic framework surfaces on its own</div></div>
-                    <div class="finding-item"><div class="finding-dot"></div><div>Authored a complete Information Security Scoping Questionnaire — ten sections restructured into five parts (Context, Governance, Risk Posture, Technical Reality, Assessment Scope) — plus a Risk Tolerance Statement formally attributed to executive leadership and a certification roadmap with audit-day estimates verified against IAF/ISO 27006 guidance</div></div>
                     <div class="rationale">
                         <div class="rationale-head"><i class="bi bi-lightbulb-fill"></i> Decision Rationale</div>
                         <div class="rationale-body">
-                            <div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">Custody Corp is a fictional physical security services provider with ~200 operational guards deployed at client sites and 14 administrative staff. The engagement began with a structured scoping exercise — adapted from an industry SOC 2 scoping template into an ISO 27001-native format — before any asset or control was defined in the assessment tooling.</div></div>
-                            <div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">Assets were modeled in three tiers (data, application, infrastructure) rather than two, specifically because the organization's own payroll software is internally developed — a distinct risk surface from the underlying server. Risk tolerance was set to Low for confidentiality/integrity of personnel data, reflecting real legal exposure from wage garnishment orders and disciplinary records, not a generic policy default.</div></div>
-                            <div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">A scoping methodology and risk assessment approach that traces every rating back to a stated business reason — reusable as a template for future engagements, and already shared with the GRC Engineering Club community with attribution to the original SOC 2 Engineering Kit.</div></div>
+                            <div class="rationale-item"><div class="rationale-label">Context</div><div class="rationale-text">Custody Corp is a fictional physical security services provider with ~200 operational guards deployed at client sites and 14 administrative staff. The engagement follows a five-stage Scope → Map → Collect → Test → Report structure, moving from a structured scoping exercise through formal system documentation and control applicability review before any certification-track activity begins.</div></div>
+                            <div class="rationale-item"><div class="rationale-label">Key Decisions</div><div class="rationale-text">Every Annex A applicability call was traced to a specific operational fact rather than defaulted to "Applicable" — for example, cloud-service controls were excluded because all infrastructure is confirmed on-premise, and development-lifecycle controls were excluded because the organization runs commercially licensed software rather than internally developed applications. Where a control revealed a real gap — such as backup frequency insufficient to meet the declared recovery point objective — that gap was documented rather than smoothed over, consistent with the same standard of honesty applied throughout the engagement.</div></div>
+                            <div class="rationale-item"><div class="rationale-label">Outcomes</div><div class="rationale-text">A System Description and Statement of Applicability that together give a complete, defensible picture of the organization's current security posture — strong in the physical and operational controls native to a security company, and underdeveloped in the formal information-governance layer, a pattern consistent with the sector rather than a generic finding. Reusable as a template for future engagements, and built on template structure adapted from the GRC Engineering Club ISO 27001 Engineering Kit with attribution.</div></div>
                         </div>
                     </div>
                     <div class="tool-links">
@@ -860,6 +861,8 @@
                         <a class="tool-link" href="case-studies/custody-corp/Custody_Corp_Scoping_Questionnaire.docx" target="_blank"><i class="bi bi-file-earmark-check"></i> Completed Exercise</a>
                         <a class="tool-link" href="case-studies/custody-corp/Custody_Corp_ISO27001_Roadmap.pdf" target="_blank"><i class="bi bi-map"></i> Certification Roadmap</a>
                         <a class="tool-link" href="case-studies/custody-corp/Custody_Corp_Risk_Tolerance_Statement.docx" target="_blank"><i class="bi bi-file-earmark-lock"></i> Risk Tolerance Statement</a>
+                        <a class="tool-link" href="case-studies/custody-corp/Custody_Corp_System_Description.docx" target="_blank"><i class="bi bi-file-earmark-richtext"></i> System Description</a>
+                        <a class="tool-link" href="case-studies/custody-corp/Custody_Corp_Statement_of_Applicability.xlsx" target="_blank"><i class="bi bi-file-earmark-spreadsheet"></i> Statement of Applicability</a>
                     </div>
                 </div>
             </div>
