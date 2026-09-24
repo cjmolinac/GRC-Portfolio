@@ -1058,17 +1058,17 @@
                     <span class="badge badge-live">↗ In Progress</span>
                 </div>
                 <div class="tool-metrics">
-                    <div class="tool-metric"><div class="tool-metric-val">1/11</div><div class="tool-metric-lbl">Labs Complete</div></div>
+                    <div class="tool-metric"><div class="tool-metric-val">2/11</div><div class="tool-metric-lbl">Labs Complete</div></div>
                     <div class="tool-metric"><div class="tool-metric-val">NIST</div><div class="tool-metric-lbl">800-53</div></div>
                     <div class="tool-metric"><div class="tool-metric-val">IaC</div><div class="tool-metric-lbl">Terraform</div></div>
                 </div>
                 <div class="tool-body">
                     <div class="findings-title">Labs Completed</div>
                     <div class="finding-item"><div class="finding-dot"></div><div><strong>Lab 2.3</strong> — Compliant S3 bucket pair (primary + log) implementing SC-28, AC-3, CM-6, AU-3/AU-6. Machine-readable evidence generated via <code>terraform show -json</code>. No screenshots.</div></div>
+                    <div class="finding-item"><div class="finding-dot"></div><div><strong>Week 2 (OPA/Rego)</strong> — Policy-as-code gate for SC-28, AC-3, CM-6 built in Rego and run with Open Policy Agent. Verified against fixtures (7/7 tests passing, including a self-identified coverage gap not covered by the starter spec) and against real Terraform plan output — including a confirmed fail-closed detection when encryption was deliberately removed from a bucket.</div></div>
                     <div class="findings-title" style="margin-top:14px;">Coming in Next Labs</div>
                     <div class="finding-item"><div class="finding-dot"></div><div>Lab 2.4 — Terraform modules for compliance on GCP with hardcoded security floors consumers cannot disable</div></div>
                     <div class="finding-item"><div class="finding-dot"></div><div>Lab 2.5 — S3 Object Lock vault with cryptographic chain of custody for evidence immutability</div></div>
-                    <div class="finding-item"><div class="finding-dot"></div><div>Lab 3.3/3.4 — OPA/Rego policies that read plan.json and prove each control is in place — fail-closed gates</div></div>
                     <div class="tool-links">
                         <a class="tool-link" href="https://github.com/datacjmolinac/GRC-Engineering-Labs" target="_blank"><i class="bi bi-github"></i> View Labs on GitHub</a>
                     </div>
