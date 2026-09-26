@@ -1569,49 +1569,64 @@
     document.getElementById('ai-evidence-chars').textContent = n + ' / ' + MAX_EVIDENCE;
   });
 
-  // ══════════════════════════════════════════
+ // ══════════════════════════════════════════
   // GROQ API
   // ══════════════════════════════════════════
+  const GROQ_MODEL_CANDIDATES = [
+    'openai/gpt-oss-120b',
+    'openai/gpt-oss-20b',
+    'llama-3.3-70b-versatile'
+  ];
+
   async function callGroq(apiKey, systemPrompt, userPrompt, maxTokens = 2048) {
     const url = 'https://api.groq.com/openai/v1/chat/completions';
-    const body = JSON.stringify({
-      model: 'openai/gpt-oss-120b',
-      max_tokens: maxTokens,
-      temperature: 0.0,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt }
-      ]
-    });
-
     const MAX_RETRIES = 3;
     const RETRY_DELAY = 4000;
 
-    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-        body
+    let lastErr;
+    for (const model of GROQ_MODEL_CANDIDATES) {
+      const body = JSON.stringify({
+        model,
+        max_tokens: maxTokens,
+        temperature: 0.0,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ]
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        return data.choices?.[0]?.message?.content || '';
-      }
+      for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+          body
+        });
 
-      const err = await response.json();
-      const msg = err.error?.message || 'API error ' + response.status;
+        if (response.ok) {
+          const data = await response.json();
+          return data.choices?.[0]?.message?.content || '';
+        }
 
-      if ((response.status === 429 || response.status === 503) && attempt < MAX_RETRIES) {
-        await new Promise(r => setTimeout(r, RETRY_DELAY));
-        continue;
+        const err = await response.json().catch(() => ({}));
+        const msg = err.error?.message || 'API error ' + response.status;
+        lastErr = new Error(msg);
+
+        // Model retired or inaccessible: stop retrying this model, fall through to the next candidate.
+        if (response.status === 404 || /does not exist|access|decommission/i.test(msg)) {
+          break;
+        }
+
+        if ((response.status === 429 || response.status === 503) && attempt < MAX_RETRIES) {
+          await new Promise(r => setTimeout(r, RETRY_DELAY));
+          continue;
+        }
+        throw lastErr;
       }
-      throw new Error(msg);
     }
-    throw new Error('Model is experiencing high demand. Please wait a moment and try again.');
+    throw lastErr || new Error('All configured models are currently unavailable. Please try again later.');
   }
 
-  function safeParseJSON(raw) {
+ function safeParseJSON(raw) {
     let clean = raw.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
     const start = clean.indexOf('{');
     const end = clean.lastIndexOf('}');
