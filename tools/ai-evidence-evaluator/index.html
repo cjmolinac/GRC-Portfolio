@@ -1575,7 +1575,7 @@
   async function callGroq(apiKey, systemPrompt, userPrompt, maxTokens = 2048) {
     const url = 'https://api.groq.com/openai/v1/chat/completions';
     const body = JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
+      model: 'openai/gpt-oss-120b',
       max_tokens: maxTokens,
       temperature: 0.0,
       messages: [
