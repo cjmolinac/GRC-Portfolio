@@ -2,7 +2,7 @@
 
 A dossier built piece by piece, applying the role defined in CertiProf's **AI Agent Manager (AIAM)** body of knowledge to a tool I built: the [GRC AI Evidence Evaluator](../). The tool is treated as an agent — it reads evidence, calls a language model, and produces a score a third party might rely on — and is governed accordingly.
 
-"Agent Governance Dossier" is my own name for the set; it is not a term defined by CertiProf.
+"Agent Governance Dossier" is my own name for the set.
 
 ## Status
 
